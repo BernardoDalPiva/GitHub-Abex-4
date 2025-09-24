@@ -1,0 +1,16 @@
+venv/
+*.venv/
+
+__pycache__/
+*.pyc
+*.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+
+.vscode/
+
+*.db
+*.sqlite3
+
+*.log
+*.tmp
