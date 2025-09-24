@@ -1,8 +1,6 @@
 import psycopg2
 from psycopg2 import Error
 
-# --- DEFINIÇÃO DAS FUNÇÕES DE BANCO DE DADOS (PRECISAM VIR PRIMEIRO) ---
-
 def conectar_banco():
     try:
         conexao = psycopg2.connect(
