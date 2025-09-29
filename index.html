@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Biblioteca</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 1200px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        h1, h2 { color: #333; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .status-disponivel { color: green; font-weight: bold; }
+        .status-emprestado { color: orange; font-weight: bold; }
+        .delete-btn { background-color: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-grid .full-width { grid-column: 1 / -1; }
+        .form-button { padding: 12px 20px; border: none; background-color: #28a745; color: white; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .search-form { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-form input { flex-grow: 1; }
+        .search-form button { padding: 10px 20px; border: none; background-color: #007BFF; color: white; border-radius: 4px; cursor: pointer; }
+        #btn-logout { padding: 10px 20px; border: none; background-color: #6c757d; color: white; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📚 Painel da Biblioteca</h1>
+        <button id="btn-logout">Sair (Logout)</button>
+    </div>
+
+    <div id="formulario" class="card">
+        <h2>Cadastrar Novo Livro</h2>
+        <form id="form-adicionar-livro">
+            <div class="form-grid">
+                <input type="text" id="titulo" placeholder="Título do Livro" required>
+                <input type="text" id="autor" placeholder="Autor" required>
+                <input type="number" id="ano" placeholder="Ano de Publicação" required>
+                <input type="text" id="genero" placeholder="Gênero" required>
+                <div class="full-width">
+                    <button type="submit" class="form-button">Adicionar ao Catálogo</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="catalogo" class="card">
+        <h2>Catálogo de Livros</h2>
+        <div class="search-form">
+            <input type="text" id="input-busca" placeholder="Buscar por título, autor ou gênero...">
+            <button id="btn-buscar">Buscar</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Gênero</th>
+                    <th>Status</th>
+                    <th>Ação</th> </tr>
+            </thead>
+            <tbody id="tabela-livros-corpo"></tbody>
+        </table>
+    </div>
+</div>
+
+ <script>
+    // =================================================================
+    // CONFIGURAÇÕES E ELEMENTOS GLOBAIS
+    // =================================================================
+    const API_URL = 'http://127.0.0.1:5000';
+    const tabelaCorpo = document.getElementById('tabela-livros-corpo');
+    const inputBusca = document.getElementById('input-busca');
+    const btnBuscar = document.getElementById('btn-buscar');
+    const formAdicionar = document.getElementById('form-adicionar-livro');
+    const btnLogout = document.getElementById('btn-logout');
+
+    // =================================================================
+    // SEÇÃO DE AUTENTICAÇÃO E MANIPULAÇÃO DE TOKEN (JWT)
+    // =================================================================
+    function getToken() {
+        return localStorage.getItem('token');
+    }
+
+    function parseJwt(token) {
+        try {
+            return JSON.parse(atob(token.split('.')[1]));
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function getUsuarioLogado() {
+        const token = getToken();
+        if (!token) return null;
+
+        const payload = parseJwt(token);
+        // Verifica se o token não expirou
+        if (payload && payload.exp * 1000 > Date.now()) {
+            return payload;
+        }
+        
+        // Se o token estiver expirado ou inválido, limpa
+        localStorage.removeItem('token');
+        return null;
+    }
+    
+    function logout() {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    }
+
+    const usuario = getUsuarioLogado();
+
+    // Redireciona para o login se não houver um usuário válido logado
+    if (!usuario) {
+        logout();
+    }
+
+    // =================================================================
+    // FUNÇÕES PRINCIPAIS DA PÁGINA
+    // =================================================================
+    async function carregarLivros(termoBusca = '') {
+        let url = `${API_URL}/livros`;
+        if (termoBusca) {
+            url += `?busca=${encodeURIComponent(termoBusca)}`;
+        }
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Falha na resposta da rede.');
+            
+            const livros = await response.json();
+            tabelaCorpo.innerHTML = ''; 
+
+            livros.forEach(livro => {
+                const statusTexto = livro.disponivel ? 'Disponível' : 'Emprestado';
+                const statusClasse = livro.disponivel ? 'status-disponivel' : 'status-emprestado';
+                const tr = document.createElement('tr');
+                
+                let acaoHtml = '<td>-</td>';
+                if (usuario && usuario.is_admin) {
+                    acaoHtml = `<td><button class="delete-btn" onclick="deletarLivro(${livro.id})">Deletar</button></td>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${livro.id}</td>
+                    <td>${livro.titulo}</td>
+                    <td>${livro.autor}</td>
+                    <td>${livro.genero}</td>
+                    <td><span class="${statusClasse}">${statusTexto}</span></td>
+                    ${acaoHtml}
+                `;
+                tabelaCorpo.appendChild(tr);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar livros:', error);
+            tabelaCorpo.innerHTML = '<tr><td colspan="6">Erro ao carregar catálogo. Verifique o console.</td></tr>';
+        }
+    }
+
+    async function deletarLivro(id) {
+        if (confirm(`Tem certeza que deseja deletar o livro com ID ${id}?`)) {
+            try {
+                const response = await fetch(`${API_URL}/livros/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const resultado = await response.json();
+                alert(resultado.mensagem || resultado.erro);
+                if (response.ok) carregarLivros(inputBusca.value);
+            } catch (error) {
+                alert('Erro de conexão ao tentar deletar o livro.');
+            }
+        }
+    }
+
+    // =================================================================
+    // EVENT LISTENERS (AÇÕES DO USUÁRIO)
+    // =================================================================
+    formAdicionar.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const livroData = {
+            titulo: document.getElementById('titulo').value,
+            autor: document.getElementById('autor').value,
+            ano_publicacao: parseInt(document.getElementById('ano').value),
+            genero: document.getElementById('genero').value
+        };
+        try {
+            const response = await fetch(`${API_URL}/livros`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(livroData)
+            });
+            const resultado = await response.json();
+            if (response.ok) {
+                alert(resultado.mensagem);
+                formAdicionar.reset();
+                carregarLivros();
+            } else {
+                alert(`Erro: ${resultado.erro}`);
+            }
+        } catch (error) {
+            alert('Erro de conexão ao tentar adicionar o livro.');
+        }
+    });
+
+    btnBuscar.addEventListener('click', () => carregarLivros(inputBusca.value));
+    inputBusca.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') carregarLivros(inputBusca.value);
+    });
+    btnLogout.addEventListener('click', logout);
+
+    // =================================================================
+    // CARREGAMENTO INICIAL
+    // ESTA LINHA É A MAIS IMPORTANTE PARA O PROBLEMA ATUAL.
+    // Garante que a função carregarLivros() seja chamada assim que a página estiver pronta.
+    // =================================================================
+    document.addEventListener('DOMContentLoaded', () => carregarLivros());
+</script>
+
+</body>
+</html>

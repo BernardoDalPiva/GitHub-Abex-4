@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Minha Biblioteca</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Bem-vindo de Volta!</h2>
+        <div id="error-div" class="error-message"></div>
+        <form id="form-login">
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required>
+            </div>
+            <button type="submit" class="submit-btn">Entrar</button>
+        </form>
+        <p class="switch-page-link">
+            Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
+        </p>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000';
+        const form = document.getElementById('form-login');
+        const errorDiv = document.getElementById('error-div');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorDiv.textContent = '';
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.mensagem);
+
+                    // <<-- PONTO CHAVE: Guardar o token recebido no localStorage do navegador
+                    localStorage.setItem('token', data.token);
+                    
+                    window.location.href = 'index.html'; // Redireciona para a página principal
+                } else {
+                    errorDiv.textContent = data.erro;
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Não foi possível conectar ao servidor.';
+            }
+        });
+    </script>
+</body>
+</html>
