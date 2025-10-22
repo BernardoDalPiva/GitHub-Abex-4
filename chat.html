@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - SwappBook</title>
 
+    <!-- 1. SCRIPT DO CLIENTE SOCKET.IO -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
+    <!-- 2. ESTILOS CSS COMPLETOS -->
     <style>
-        /* --- TODOS OS SEUS ESTILOS CSS VÊM AQUI --- */
-        /* ... (copie e cole todo o seu bloco <style>... </style> aqui) ... */
-
-        /* --- ESTILOS GLOBAIS E DE FUNDO (MESMO PADRÃO) --- */
+        /* --- ESTILOS GLOBAIS E DE FUNDO --- */
          * {
              box-sizing: border-box; 
          }
@@ -31,7 +30,7 @@
              max-width: 1200px; 
              margin: auto; 
          }
-         /* --- CABEÇALHO (MESMO PADRÃO) --- */
+         /* --- CABEÇALHO --- */
          .header { 
              display: flex; 
              justify-content: space-between; 
@@ -69,7 +68,7 @@
          .header-btn:hover {
              background-color: #5a6268;
          }
-         /* --- ESTILO DO "CARD" (MANTIDO) --- */
+         /* --- ESTILO DO "CARD" --- */
          .card { 
              background: rgba(255, 255, 255, 0.95);
              border-radius: 8px; 
@@ -81,7 +80,7 @@
              margin-top: 0;
              font-weight: 600;
          }
-         /* --- NOVOS ESTILOS PARA A INTERFACE DE CHAT --- */
+         /* --- ESTILOS DA INTERFACE DE CHAT --- */
          .chat-container {
              display: flex;
              height: 75vh; 
@@ -168,12 +167,20 @@
              flex-direction: column;
              background-color: #fdfdfd;
          }
+         /* Estilo para placeholders do histórico */
+         .message-area-placeholder {
+            text-align: center;
+            color: #777;
+            margin: auto;
+         }
+
          .message {
              max-width: 70%;
              padding: 10px 15px;
              border-radius: 18px;
              margin-bottom: 10px;
              line-height: 1.4;
+             word-wrap: break-word; /* Garante quebra de linha */
          }
          .message p {
              margin: 0;
@@ -260,7 +267,14 @@
             </div>
             <div class="contact-list" id="contact-list">
 
-                <div class="contact-item" data-id="sala_teste_1" data-name="Maria Silva">
+                <!-- 
+                  !! IMPORTANTE !! 
+                  'data-id' deve ser um ID de sala ÚNICO.
+                  Seu backend espera por 'sala_id' na tabela 'mensagens'.
+                  Estes são exemplos para teste.
+                -->
+                
+                <div class="contact-item" data-id="chat_maria_admin" data-name="Maria Silva">
                     <div class="contact-photo">M</div>
                     <div class="contact-info">
                         <h4>Maria Silva</h4>
@@ -268,7 +282,7 @@
                     </div>
                 </div>
                 
-                <div class="contact-item" data-id="sala_teste_2" data-name="João Souza">
+                <div class="contact-item" data-id="chat_joao_admin" data-name="João Souza">
                     <div class="contact-photo">J</div>
                     <div class="contact-info">
                         <h4>João Souza</h4>
@@ -284,10 +298,12 @@
             </div>
             
             <div class="message-area" id="message-area">
-                </div>
+                 <!-- Mensagens serão inseridas aqui pelo JavaScript -->
+                 <p class="message-area-placeholder">Selecione uma conversa ao lado para começar.</p>
+            </div>
             
             <form class="chat-input-form" id="form-chat">
-                <input type="text" id="message-input" placeholder="Digite sua mensagem..." disabled>
+                <input type="text" id="message-input" placeholder="Selecione uma conversa..." disabled>
                 <button type="submit" disabled>Enviar</button>
             </form>
         </div>
@@ -295,9 +311,10 @@
     </div>
 </div>
 
+<!-- 3. SCRIPT DO CHAT (Completamente revisado) -->
 <script>
     // =================================================================
-    // AUTENTICAÇÃO (Copiado do seu index.html)
+    // AUTENTICAÇÃO (Validado)
     // =================================================================
     
     function getToken() {
@@ -327,7 +344,6 @@
             return payload; // Retorna os dados do usuário (ex: {id: 1, nome: 'Ana', ...})
         }
         
-        // Se o token for inválido ou expirado, limpa e retorna nulo
         localStorage.removeItem('token');
         return null;
     }
@@ -344,25 +360,43 @@
     // CONFIGURAÇÕES E CONEXÃO COM O SOCKET
     // =================================================================
     const API_URL = 'http://127.0.0.1:5000';
-    
-    // Conecta ao servidor WebSocket (definido no backend)
-    const socket = io(API_URL, {
-        auth: {
-            token: getToken() // Envia o token para o backend
-        }
-    });
+    let socket; // Declarado aqui
 
-    socket.on('connect', () => {
-        console.log('Conectado ao servidor WebSocket com ID:', socket.id);
-    });
+    // Só tenta conectar se o usuário estiver logado
+    if (usuario) {
+        socket = io(API_URL, {
+            auth: {
+                token: getToken() // Envia o token para o backend
+            }
+        });
 
-    socket.on('connect_error', (err) => {
-        console.error('Erro ao conectar ao WebSocket:', err.message);
-        alert('Não foi possível conectar ao servidor de chat.');
-    });
+        socket.on('connect', () => {
+            console.log('Conectado ao servidor WebSocket com ID:', socket.id);
+        });
+
+        socket.on('connect_error', (err) => {
+            console.error('Erro ao conectar ao WebSocket:', err.message);
+            alert('Não foi possível conectar ao servidor de chat.');
+        });
+        
+        // OUVINTE DO SERVIDOR (Recebendo Mensagens)
+        socket.on('nova_mensagem', (data) => {
+            console.log('Mensagem recebida do servidor:', data);
+            
+            // Verifica se a mensagem é da sala que está aberta
+            // E se a mensagem NÃO foi enviada por mim (pois já adicionei)
+            if (data.sala === currentChatId && data.remetente_id !== usuario.id) {
+                adicionarMensagemNaTela(data.texto, data.time, 'received');
+            }
+        });
+
+    } else {
+        // Se o usuário não estiver logado, o script não continuará
+        console.error("Socket não conectado pois não há usuário.");
+    }
 
     // =================================================================
-    // ELEMENTOS DO DOM (Igual ao seu original)
+    // ELEMENTOS DO DOM (Validado)
     // =================================================================
     const contactList = document.getElementById('contact-list');
     const chatHeader = document.getElementById('chat-with-name');
@@ -375,10 +409,60 @@
     let currentChatName = null;
 
     // =================================================================
-    // FUNÇÕES DO CHAT (Modificadas)
+    // FUNÇÕES DO CHAT (Revisadas e Implementadas)
     // =================================================================
 
-    // 1. Carrega uma conversa ao clicar no contato
+    /**
+     * Carrega o histórico de mensagens de uma sala via fetch.
+     */
+    async function carregarHistorico(salaId) {
+        if (!usuario) return; // Garante que o usuário está logado
+
+        messageArea.innerHTML = '<p class="message-area-placeholder">Carregando histórico...</p>';
+
+        try {
+            const response = await fetch(`${API_URL}/historico/${salaId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}` // Envia o token para a rota protegida
+                }
+            });
+
+            if (!response.ok) {
+                const erro = await response.json();
+                console.error('Erro ao carregar histórico:', erro.erro);
+                messageArea.innerHTML = `<p class="message-area-placeholder">Não foi possível carregar o histórico: ${erro.erro}</p>`;
+                return;
+            }
+
+            const historico = await response.json();
+            
+            // Limpa o placeholder antes de adicionar mensagens
+            messageArea.innerHTML = ''; 
+
+            if (historico.length === 0) {
+                messageArea.innerHTML = '<p class="message-area-placeholder">Nenhuma mensagem ainda. Diga olá!</p>';
+                return;
+            }
+
+            // Popula a área de chat com o histórico
+            historico.forEach(msg => {
+                // Verifica se a mensagem é 'sent' (enviada) ou 'received' (recebida)
+                // O backend (app.py) já nos envia o 'nome' do remetente
+                const type = msg.remetente === usuario.nome ? 'sent' : 'received';
+                adicionarMensagemNaTela(msg.texto, msg.time, type);
+            });
+
+        } catch (error) {
+            console.error('Erro de rede ao carregar histórico:', error);
+            messageArea.innerHTML = '<p class="message-area-placeholder">Erro de conexão ao carregar mensagens.</p>';
+        }
+    }
+
+
+    /**
+     * Carrega uma nova conversa na janela de chat.
+     */
     function carregarConversa(id, name) {
         currentChatId = id; 
         currentChatName = name;
@@ -403,19 +487,21 @@
         // Limpa mensagens antigas
         messageArea.innerHTML = '';
 
-        // **NOVO:** Informa ao servidor que você entrou nesta sala
-        socket.emit('entrar_sala', { sala: currentChatId });
+        // Informa ao servidor que você entrou nesta sala
+        if (socket) {
+            socket.emit('entrar_sala', { sala: currentChatId });
+        }
 
-        // **A FAZER:** Carregar o histórico
-        // (Aqui você faria um 'fetch' para uma rota GET /historico/<id_da_sala>
-        //  para carregar mensagens antigas do banco de dados)
-        // Por enquanto, a sala começa vazia.
+        // **IMPLEMENTADO:** Carrega o histórico de mensagens
+        carregarHistorico(currentChatId);
     }
 
-    // 2. Adiciona um balão de mensagem na tela
+    /**
+     * Adiciona um balão de mensagem na tela.
+     */
     function adicionarMensagemNaTela(text, time, type) {
         const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', type); // 'type' é 'sent' ou 'received'
+        msgDiv.classList.add('message', type);
         
         // Sanitiza o texto para evitar HTML indesejado
         const p = document.createElement('p');
@@ -431,7 +517,9 @@
         scrollToBottom(); // Rola para o final
     }
 
-    // 3. Rola a área de mensagens para o final
+    /**
+     * Rola a área de mensagens para o final.
+     */
     function scrollToBottom() {
         messageArea.scrollTop = messageArea.scrollHeight;
     }
@@ -443,7 +531,7 @@
     // Clicar em um contato da lista
     contactList.addEventListener('click', (event) => {
         const contactItem = event.target.closest('.contact-item');
-        if (contactItem) {
+        if (contactItem && usuario) { // Só carrega se o usuário estiver logado
             const id = contactItem.dataset.id;
             const name = contactItem.dataset.name;
             carregarConversa(id, name);
@@ -455,7 +543,8 @@
         event.preventDefault();
         const texto = messageInput.value.trim();
         
-        if (texto && currentChatId && usuario) {
+        // Só envia se tiver texto, sala selecionada, usuário e socket conectados
+        if (texto && currentChatId && usuario && socket) {
             const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
             const dadosMensagem = {
@@ -474,21 +563,7 @@
             
             // 3. Limpa o input
             messageInput.value = '';
-        }
-    });
-
-    // =================================================================
-    // OUVINTE DO SERVIDOR (Recebendo Mensagens)
-    // =================================================================
-    
-    // Ouve por mensagens que o servidor envia
-    socket.on('nova_mensagem', (data) => {
-        console.log('Mensagem recebida do servidor:', data);
-        
-        // Verifica se a mensagem é da sala que está aberta
-        // E se a mensagem NÃO foi enviada por mim (pois já adicionei)
-        if (data.sala === currentChatId && data.remetente_id !== usuario.id) {
-            adicionarMensagemNaTela(data.texto, data.time, 'received');
+            messageInput.focus(); // Mantém o foco no input
         }
     });
 
