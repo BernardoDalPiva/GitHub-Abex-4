@@ -4,268 +4,235 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - SwappBook</title>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
     <style>
+        /* --- TODOS OS SEUS ESTILOS CSS VÊM AQUI --- */
+        /* ... (copie e cole todo o seu bloco <style>... </style> aqui) ... */
+
         /* --- ESTILOS GLOBAIS E DE FUNDO (MESMO PADRÃO) --- */
-        * {
-            box-sizing: border-box; 
-        }
-
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0;
-            padding: 20px; 
-            background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto-format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
-            background-size: cover; 
-            background-position: center center; 
-            background-repeat: no-repeat;
-            background-attachment: fixed; 
-            min-height: 100vh;
-        }
-
-        /* --- LAYOUT DO CONTEÚDO --- */
-        .container { 
-            max-width: 1200px; 
-            margin: auto; 
-        }
-
-        /* --- CABEÇALHO (MESMO PADRÃO) --- */
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px; 
-        }
-
-        .logo-container svg {
-            width: 50px; 
-            height: 50px;
-        }
-        
-        .logo-name {
-            font-size: 2.5rem; 
-            font-weight: 700;
-            color: #007bff; 
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); 
-            margin: 0;
-        }
-        
-        /* Botão no Header (Padrão) */
-        .header-btn { 
-            padding: 12px 20px; 
-            border: none; 
-            background-color: #6c757d; 
-            color: white; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            text-decoration: none; /* Caso use <a> */
-        }
-        .header-btn:hover {
-            background-color: #5a6268;
-        }
-
-        /* --- ESTILO DO "CARD" (MANTIDO) --- */
-        .card { 
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            overflow: hidden; /* Para conter as bordas do chat */
-        }
-
-        h2, h3 { 
-            color: #333; 
-            margin-top: 0;
-            font-weight: 600;
-        }
-
-        /* --- NOVOS ESTILOS PARA A INTERFACE DE CHAT --- */
-
-        /* O "Card" principal do chat */
-        .chat-container {
-            display: flex;
-            height: 75vh; /* Altura de 75% da tela */
-            min-height: 500px; /* Altura mínima */
-        }
-
-        /* 1. Sidebar de Contatos (Esquerda) */
-        .chat-sidebar {
-            flex: 0 0 300px; /* Largura fixa de 300px */
-            border-right: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-            background-color: #fcfcfc;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .sidebar-header h2 {
-            margin-bottom: 0;
-            font-size: 1.5rem;
-        }
-
-        .contact-list {
-            overflow-y: auto; /* Permite rolar a lista de contatos */
-            flex: 1;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .contact-item:hover {
-            background-color: #f5f5f5;
-        }
-        .contact-item.active {
-            background-color: #e9f2ff; /* Fundo azul claro para o chat ativo */
-        }
-        
-        /* (Opcional) Foto de perfil */
-        .contact-photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #007bff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            font-size: 1.2rem;
-        }
-        
-        .contact-info h4 {
-            margin: 0 0 5px 0;
-            color: #333;
-        }
-        .contact-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #777;
-            /* Oculta mensagens longas */
-            white-space: nowrap; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px; 
-        }
-
-        /* 2. Janela de Chat (Direita) */
-        .chat-window {
-            flex: 1; /* Ocupa o resto do espaço */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-        .chat-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-
-        /* Área onde as mensagens aparecem */
-        .message-area {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto; /* Permite rolar as mensagens */
-            display: flex;
-            flex-direction: column;
-            background-color: #fdfdfd;
-        }
-        
-        /* Balão de Mensagem */
-        .message {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-        .message p {
-            margin: 0;
-        }
-        .message span { /* Timestamp */
-            font-size: 0.75rem;
-            color: #555;
-            display: block;
-            margin-top: 5px;
-            text-align: right;
-        }
-
-        /* Mensagem Recebida (Esquerda) */
-        .message.received {
-            align-self: flex-start;
-            background-color: #e9e9e9;
-            border-bottom-left-radius: 4px;
-        }
-        .message.received span {
-            color: #777;
-        }
-
-        /* Mensagem Enviada (Direita) */
-        .message.sent {
-            align-self: flex-end;
-            background-color: #007bff; /* Padrão azul */
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        
-        /* Formulário de envio de mensagem */
-        .chat-input-form {
-            display: flex;
-            padding: 15px 20px;
-            border-top: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-        
-        .chat-input-form input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .chat-input-form input:focus {
-            outline: none; 
-            border-color: #007bff; 
-            box-shadow: 0 0 5px rgba(0,123,255,0.25); 
-        }
-
-        .chat-input-form button {
-            padding: 12px 20px; 
-            margin-left: 10px;
-            border: none; 
-            background-color: #007BFF; 
-            color: white; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        .chat-input-form button:hover {
-            background-color: #0056b3;
-        }
-
+         * {
+             box-sizing: border-box; 
+         }
+         body { 
+             font-family: Arial, sans-serif; 
+             margin: 0;
+             padding: 20px; 
+             background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+             background-size: cover; 
+             background-position: center center; 
+             background-repeat: no-repeat;
+             background-attachment: fixed; 
+             min-height: 100vh;
+         }
+         /* --- LAYOUT DO CONTEÚDO --- */
+         .container { 
+             max-width: 1200px; 
+             margin: auto; 
+         }
+         /* --- CABEÇALHO (MESMO PADRÃO) --- */
+         .header { 
+             display: flex; 
+             justify-content: space-between; 
+             align-items: center; 
+             margin-bottom: 20px;
+         }
+         .logo-container {
+             display: flex;
+             align-items: center;
+             gap: 15px; 
+         }
+         .logo-container svg {
+             width: 50px; 
+             height: 50px;
+         }
+         .logo-name {
+             font-size: 2.5rem; 
+             font-weight: 700;
+             color: #007bff; 
+             text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); 
+             margin: 0;
+         }
+         .header-btn { 
+             padding: 12px 20px; 
+             border: none; 
+             background-color: #6c757d; 
+             color: white; 
+             border-radius: 5px; 
+             cursor: pointer; 
+             font-size: 1rem;
+             font-weight: bold;
+             transition: background-color 0.3s ease;
+             text-decoration: none;
+         }
+         .header-btn:hover {
+             background-color: #5a6268;
+         }
+         /* --- ESTILO DO "CARD" (MANTIDO) --- */
+         .card { 
+             background: rgba(255, 255, 255, 0.95);
+             border-radius: 8px; 
+             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+             overflow: hidden; 
+         }
+         h2, h3 { 
+             color: #333; 
+             margin-top: 0;
+             font-weight: 600;
+         }
+         /* --- NOVOS ESTILOS PARA A INTERFACE DE CHAT --- */
+         .chat-container {
+             display: flex;
+             height: 75vh; 
+             min-height: 500px; 
+         }
+         .chat-sidebar {
+             flex: 0 0 300px; 
+             border-right: 1px solid #ddd;
+             display: flex;
+             flex-direction: column;
+             background-color: #fcfcfc;
+         }
+         .sidebar-header {
+             padding: 20px;
+             border-bottom: 1px solid #ddd;
+         }
+         .sidebar-header h2 {
+             margin-bottom: 0;
+             font-size: 1.5rem;
+         }
+         .contact-list {
+             overflow-y: auto; 
+             flex: 1;
+         }
+         .contact-item {
+             display: flex;
+             align-items: center;
+             padding: 15px 20px;
+             border-bottom: 1px solid #eee;
+             cursor: pointer;
+             transition: background-color 0.2s;
+         }
+         .contact-item:hover {
+             background-color: #f5f5f5;
+         }
+         .contact-item.active {
+             background-color: #e9f2ff; 
+         }
+         .contact-photo {
+             width: 40px;
+             height: 40px;
+             border-radius: 50%;
+             background-color: #007bff;
+             color: white;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-weight: bold;
+             margin-right: 15px;
+             font-size: 1.2rem;
+         }
+         .contact-info h4 {
+             margin: 0 0 5px 0;
+             color: #333;
+         }
+         .contact-info p {
+             margin: 0;
+             font-size: 0.9rem;
+             color: #777;
+             white-space: nowrap; 
+             overflow: hidden;
+             text-overflow: ellipsis;
+             max-width: 180px; 
+         }
+         .chat-window {
+             flex: 1; 
+             display: flex;
+             flex-direction: column;
+         }
+         .chat-header {
+             padding: 20px;
+             border-bottom: 1px solid #ddd;
+             background-color: #f9f9f9;
+         }
+         .chat-header h3 {
+             margin: 0;
+             font-size: 1.2rem;
+         }
+         .message-area {
+             flex: 1;
+             padding: 20px;
+             overflow-y: auto; 
+             display: flex;
+             flex-direction: column;
+             background-color: #fdfdfd;
+         }
+         .message {
+             max-width: 70%;
+             padding: 10px 15px;
+             border-radius: 18px;
+             margin-bottom: 10px;
+             line-height: 1.4;
+         }
+         .message p {
+             margin: 0;
+         }
+         .message span { 
+             font-size: 0.75rem;
+             color: #555;
+             display: block;
+             margin-top: 5px;
+             text-align: right;
+         }
+         .message.received {
+             align-self: flex-start;
+             background-color: #e9e9e9;
+             border-bottom-left-radius: 4px;
+         }
+         .message.received span {
+             color: #777;
+         }
+         .message.sent {
+             align-self: flex-end;
+             background-color: #007bff; 
+             color: white;
+             border-bottom-right-radius: 4px;
+         }
+         .chat-input-form {
+             display: flex;
+             padding: 15px 20px;
+             border-top: 1px solid #ddd;
+             background-color: #f9f9f9;
+         }
+         .chat-input-form input {
+             flex: 1;
+             padding: 12px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+             font-size: 1rem;
+             transition: border-color 0.3s, box-shadow 0.3s;
+         }
+         .chat-input-form input:focus {
+             outline: none; 
+             border-color: #007bff; 
+             box-shadow: 0 0 5px rgba(0,123,255,0.25); 
+         }
+         .chat-input-form button {
+             padding: 12px 20px; 
+             margin-left: 10px;
+             border: none; 
+             background-color: #007BFF; 
+             color: white; 
+             border-radius: 5px; 
+             cursor: pointer; 
+             font-size: 1rem;
+             font-weight: bold;
+             transition: background-color 0.3s ease;
+         }
+         .chat-input-form button:hover {
+             background-color: #0056b3;
+         }
     </style>
 </head>
 <body>
@@ -290,9 +257,10 @@
         <div class="chat-sidebar">
             <div class="sidebar-header">
                 <h2>Conversas</h2>
-                </div>
+            </div>
             <div class="contact-list" id="contact-list">
-                <div class="contact-item" data-id="1" data-name="Maria Silva">
+
+                <div class="contact-item" data-id="sala_teste_1" data-name="Maria Silva">
                     <div class="contact-photo">M</div>
                     <div class="contact-info">
                         <h4>Maria Silva</h4>
@@ -300,7 +268,7 @@
                     </div>
                 </div>
                 
-                <div class="contact-item" data-id="2" data-name="João Souza">
+                <div class="contact-item" data-id="sala_teste_2" data-name="João Souza">
                     <div class="contact-photo">J</div>
                     <div class="contact-info">
                         <h4>João Souza</h4>
@@ -327,20 +295,74 @@
     </div>
 </div>
 
- <script>
+<script>
     // =================================================================
-    // AUTENTICAÇÃO (Mesmo padrão das outras telas)
+    // AUTENTICAÇÃO (Copiado do seu index.html)
     // =================================================================
     
-    // (Cole aqui as funções getToken, parseJwt, getUsuarioLogado e logout)
-    // ...
-    // const usuario = getUsuarioLogado();
-    // if (!usuario) {
-    //     logout();
-    // }
+    function getToken() {
+        return localStorage.getItem('token');
+    }
+
+    function parseJwt(token) {
+        try {
+            return JSON.parse(atob(token.split('.')[1]));
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    }
+
+    function getUsuarioLogado() {
+        const token = getToken();
+        if (!token) return null;
+
+        const payload = parseJwt(token);
+        // Verifica se o payload existe E se não está expirado
+        if (payload && payload.exp * 1000 > Date.now()) {
+            return payload; // Retorna os dados do usuário (ex: {id: 1, nome: 'Ana', ...})
+        }
+        
+        // Se o token for inválido ou expirado, limpa e retorna nulo
+        localStorage.removeItem('token');
+        return null;
+    }
+    
+    const usuario = getUsuarioLogado();
+
+    // Redireciona para o login se não houver usuário
+    if (!usuario) {
+        console.error("Nenhum usuário logado. Redirecionando para login.");
+        logout();
+    }
 
     // =================================================================
-    // ELEMENTOS DO CHAT
+    // CONFIGURAÇÕES E CONEXÃO COM O SOCKET
+    // =================================================================
+    const API_URL = 'http://127.0.0.1:5000';
+    
+    // Conecta ao servidor WebSocket (definido no backend)
+    const socket = io(API_URL, {
+        auth: {
+            token: getToken() // Envia o token para o backend
+        }
+    });
+
+    socket.on('connect', () => {
+        console.log('Conectado ao servidor WebSocket com ID:', socket.id);
+    });
+
+    socket.on('connect_error', (err) => {
+        console.error('Erro ao conectar ao WebSocket:', err.message);
+        alert('Não foi possível conectar ao servidor de chat.');
+    });
+
+    // =================================================================
+    // ELEMENTOS DO DOM (Igual ao seu original)
     // =================================================================
     const contactList = document.getElementById('contact-list');
     const chatHeader = document.getElementById('chat-with-name');
@@ -349,29 +371,19 @@
     const messageInput = document.getElementById('message-input');
     const sendButton = chatForm.querySelector('button');
 
-    let currentChatId = null;
-
-    // Dados Falsos (Simulação de uma API)
-    const DUMMY_MESSAGES = {
-        "1": [
-            { sender: "Maria Silva", text: "Olá! Tenho interesse no seu livro 'O Iluminado'.", time: "10:30", type: "received" },
-            { sender: "Eu", text: "Oi, Maria! Claro. Ele está em ótimo estado.", time: "10:31", type: "sent" },
-            { sender: "Maria Silva", text: "Perfeito! Você tem interesse em 'A Torre Negra'?", time: "10:32", type: "received" }
-        ],
-        "2": [
-            { sender: "João Souza", text: "Obrigado pela troca! Foi ótimo.", time: "Ontem", type: "received" }
-        ]
-    };
+    let currentChatId = null; // ID da sala atual (ex: 'sala_teste_1')
+    let currentChatName = null;
 
     // =================================================================
-    // FUNÇÕES DO CHAT (ESQUELETO)
+    // FUNÇÕES DO CHAT (Modificadas)
     // =================================================================
 
     // 1. Carrega uma conversa ao clicar no contato
     function carregarConversa(id, name) {
-        currentChatId = id;
+        currentChatId = id; 
+        currentChatName = name;
         
-        // Ativa o contato na lista
+        // Ativa o contato na lista (visual)
         document.querySelectorAll('.contact-item').forEach(item => {
             item.classList.remove('active');
             if (item.dataset.id === id) {
@@ -386,18 +398,18 @@
         messageInput.disabled = false;
         sendButton.disabled = false;
         messageInput.placeholder = "Digite sua mensagem...";
+        messageInput.focus();
 
         // Limpa mensagens antigas
         messageArea.innerHTML = '';
 
-        // Carrega as mensagens (aqui você faria um fetch)
-        const mensagens = DUMMY_MESSAGES[id] || [];
-        mensagens.forEach(msg => {
-            adicionarMensagemNaTela(msg.text, msg.time, msg.type);
-        });
-        
-        // Rola para a mensagem mais recente
-        scrollToBottom();
+        // **NOVO:** Informa ao servidor que você entrou nesta sala
+        socket.emit('entrar_sala', { sala: currentChatId });
+
+        // **A FAZER:** Carregar o histórico
+        // (Aqui você faria um 'fetch' para uma rota GET /historico/<id_da_sala>
+        //  para carregar mensagens antigas do banco de dados)
+        // Por enquanto, a sala começa vazia.
     }
 
     // 2. Adiciona um balão de mensagem na tela
@@ -405,11 +417,18 @@
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message', type); // 'type' é 'sent' ou 'received'
         
-        msgDiv.innerHTML = `
-            <p>${text}</p>
-            <span>${time}</span>
-        `;
+        // Sanitiza o texto para evitar HTML indesejado
+        const p = document.createElement('p');
+        p.textContent = text; 
+        
+        const span = document.createElement('span');
+        span.textContent = time;
+
+        msgDiv.appendChild(p);
+        msgDiv.appendChild(span);
+        
         messageArea.appendChild(msgDiv);
+        scrollToBottom(); // Rola para o final
     }
 
     // 3. Rola a área de mensagens para o final
@@ -418,7 +437,7 @@
     }
 
     // =================================================================
-    // EVENT LISTENERS
+    // EVENT LISTENERS (Ações do Usuário)
     // =================================================================
 
     // Clicar em um contato da lista
@@ -436,27 +455,43 @@
         event.preventDefault();
         const texto = messageInput.value.trim();
         
-        if (texto && currentChatId) {
-            // 1. (Simulação) Adiciona a mensagem na tela
+        if (texto && currentChatId && usuario) {
             const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            const dadosMensagem = {
+                sala: currentChatId,
+                texto: texto,
+                remetente: usuario.nome,  // Pego do token
+                remetente_id: usuario.id, // Pego do token
+                time: timestamp
+            };
+
+            // 1. Envia a mensagem para o servidor WebSocket
+            socket.emit('enviar_mensagem', dadosMensagem);
+
+            // 2. Adiciona a *sua própria* mensagem na tela imediatamente
             adicionarMensagemNaTela(texto, timestamp, 'sent');
             
-            // 2. Limpa o input
+            // 3. Limpa o input
             messageInput.value = '';
-            
-            // 3. Rola para o final
-            scrollToBottom();
-            
-            // 4. (Simulação de Resposta)
-            // Aqui você enviaria 'texto' e 'currentChatId' para seu backend (via WebSocket)
-            setTimeout(() => {
-                adicionarMensagemNaTela("Recebido! Estou analisando...", timestamp, 'received');
-                scrollToBottom();
-            }, 1500);
+        }
+    });
+
+    // =================================================================
+    // OUVINTE DO SERVIDOR (Recebendo Mensagens)
+    // =================================================================
+    
+    // Ouve por mensagens que o servidor envia
+    socket.on('nova_mensagem', (data) => {
+        console.log('Mensagem recebida do servidor:', data);
+        
+        // Verifica se a mensagem é da sala que está aberta
+        // E se a mensagem NÃO foi enviada por mim (pois já adicionei)
+        if (data.sala === currentChatId && data.remetente_id !== usuario.id) {
+            adicionarMensagemNaTela(data.texto, data.time, 'received');
         }
     });
 
 </script>
-
 </body>
 </html>
