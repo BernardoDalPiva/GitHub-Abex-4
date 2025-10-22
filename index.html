@@ -3,36 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Biblioteca</title>
+    <title>Dashboard - SwappBook</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-        .container { max-width: 1200px; margin: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        h1, h2 { color: #333; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-        th { background-color: #f2f2f2; }
+        /* --- ESTILOS GLOBAIS E DE FUNDO --- */
+        * {
+            box-sizing: border-box; 
+        }
+
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 20px; 
+            background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+            background-size: cover; 
+            background-position: center center; 
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            min-height: 100vh;
+        }
+
+        /* --- LAYOUT DO CONTEÚDO --- */
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+        }
+
+        /* --- CABEÇALHO COM A LOGO --- */
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+        }
+
+        .logo-container svg {
+            width: 50px; 
+            height: 50px;
+        }
+        
+        .logo-name {
+            font-size: 2.5rem; 
+            font-weight: 700;
+            color: #007bff; 
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); 
+            margin: 0;
+        }
+        
+        /* --- ESTILO DOS "CARDS" --- */
+        .card { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+
+        h2 { 
+            color: #333; 
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        /* --- ESTILOS DOS FORMULÁRIOS (INPUTS) --- */
+        input[type="text"], 
+        input[type="number"] { 
+            width: 100%; 
+            padding: 12px; 
+            box-sizing: border-box; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none; 
+            border-color: #007bff; 
+            box-shadow: 0 0 5px rgba(0,123,255,0.25); 
+        }
+
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+        .form-grid .full-width { 
+            grid-column: 1 / -1; 
+        }
+
+        /* --- ESTILOS DOS BOTÕES --- */
+        
+        /* Botão Adicionar (Azul) */
+        .form-button { 
+            width: 100%;
+            padding: 12px 20px; 
+            border: none; 
+            background-color: #007bff; 
+            color: white; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .form-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Botão de Busca (Azul) */
+        .search-form { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        .search-form input { 
+            flex-grow: 1; 
+        }
+        .search-form button { 
+            padding: 12px 20px; 
+            border: none; 
+            background-color: #007BFF; 
+            color: white; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .search-form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* --- NOVOS ESTILOS PARA BOTÕES DO HEADER --- */
+        .header-buttons {
+            display: flex;
+            gap: 10px; /* Espaço entre os botões */
+        }
+
+        /* Botão Padrão do Header (Logout e Chat) */
+        .header-btn { 
+            padding: 12px 20px; 
+            border: none; 
+            background-color: #6c757d; /* Cor Padrão (Cinza) */
+            color: white; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Para o caso do <a> */
+            display: inline-block;
+        }
+        .header-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Modificador para cor primária (Azul) */
+        .header-btn.btn-primary {
+            background-color: #007bff;
+        }
+        .header-btn.btn-primary:hover {
+            background-color: #0056b3;
+        }
+        /* --- FIM DOS NOVOS ESTILOS --- */
+        
+        /* Botão Deletar (Vermelho) */
+        .delete-btn { 
+            background-color: #ff4d4d; 
+            color: white; 
+            border: none; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+        }
+        .delete-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* --- ESTILOS DA TABELA --- */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            padding: 12px; 
+            border-bottom: 1px solid #ddd; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
         .status-disponivel { color: green; font-weight: bold; }
         .status-emprestado { color: orange; font-weight: bold; }
-        .delete-btn { background-color: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-grid .full-width { grid-column: 1 / -1; }
-        .form-button { padding: 12px 20px; border: none; background-color: #28a745; color: white; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .search-form { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-form input { flex-grow: 1; }
-        .search-form button { padding: 10px 20px; border: none; background-color: #007BFF; color: white; border-radius: 4px; cursor: pointer; }
-        #btn-logout { padding: 10px 20px; border: none; background-color: #6c757d; color: white; border-radius: 4px; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>📚 Painel da Biblioteca</h1>
-        <button id="btn-logout">Sair (Logout)</button>
-    </div>
+        <div class="logo-container">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
+                <path d="M10 8l-3 3 3 3"/>
+                <path d="M14 12l3-3-3-3"/>
+                <line x1="7" y1="11" x2="17" y2="11"/>
+            </svg>
+            <h1 class="logo-name">SwappBook</h1>
+        </div>
+        
+        <div class="header-buttons">
+            <a href="chat.html" class="header-btn btn-primary">Chat de Trocas</a>
+            
+            <button id="btn-logout" class="header-btn">Sair (Logout)</button>
+        </div>
+        </div>
 
     <div id="formulario" class="card">
         <h2>Cadastrar Novo Livro</h2>
@@ -65,7 +260,8 @@
                     <th>Status</th>
                     <th>Ação</th> </tr>
             </thead>
-            <tbody id="tabela-livros-corpo"></tbody>
+            <tbody id="tabela-livros-corpo">
+                </tbody>
         </table>
     </div>
 </div>
@@ -101,12 +297,10 @@
         if (!token) return null;
 
         const payload = parseJwt(token);
-        // Verifica se o token não expirou
         if (payload && payload.exp * 1000 > Date.now()) {
             return payload;
         }
         
-        // Se o token estiver expirado ou inválido, limpa
         localStorage.removeItem('token');
         return null;
     }
@@ -118,7 +312,6 @@
 
     const usuario = getUsuarioLogado();
 
-    // Redireciona para o login se não houver um usuário válido logado
     if (!usuario) {
         logout();
     }
@@ -219,8 +412,6 @@
 
     // =================================================================
     // CARREGAMENTO INICIAL
-    // ESTA LINHA É A MAIS IMPORTANTE PARA O PROBLEMA ATUAL.
-    // Garante que a função carregarLivros() seja chamada assim que a página estiver pronta.
     // =================================================================
     document.addEventListener('DOMContentLoaded', () => carregarLivros());
 </script>

@@ -3,19 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Minha Biblioteca</title>
-    <link rel="stylesheet" href="style.css"> <style>
-        /* Estilos adicionais para centralizar o formulário */
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-container { width: 100%; max-width: 400px; }
-        .error-message { color: #cc0000; margin-bottom: 10px; text-align: center; }
+    <title>Cadastro - SwappBook</title>
+    <style>
+        /* --- ESTILOS GLOBAIS E DE LAYOUT --- */
+        
+        * {
+            box-sizing: border-box; 
+        }
+
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+            background-size: cover; 
+            background-position: center center; 
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+        }
+        
+        /* --- ESTILOS DO CONTÊINER DO FORMULÁRIO --- */
+
+        .auth-container { 
+            width: 100%; 
+            max-width: 420px; /* Um pouco mais largo para a logo */
+            background-color: rgba(255, 255, 255, 0.95); /* Menos transparência para legibilidade */
+            padding: 2.5rem 2rem; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* --- NOVOS ESTILOS DA LOGO --- */
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column; /* Empilha o ícone e o texto */
+            align-items: center; /* Centraliza horizontalmente */
+            margin-bottom: 1rem;
+        }
+
+        .logo-container svg {
+            width: 70px; /* Tamanho do ícone */
+            height: 70px;
+        }
+        
+        .logo-name {
+            font-size: 2.5rem; /* Tamanho do nome */
+            font-weight: 700;
+            color: #333;
+            margin: 0.5rem 0 0 0; /* Espaço entre o ícone e o nome */
+        }
+        
+        /* --- FIM DOS ESTILOS DA LOGO --- */
+        
+
+        /* h2 (Subtítulo) */
+        h2 {
+            text-align: center;
+            color: #555; /* Cor mais suave, pois é um subtítulo */
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.5rem; /* Um pouco menor */
+        }
+
+        /* --- ESTILOS DOS CAMPOS DO FORMULÁRIO --- */
+
+        #form-cadastro {
+            display: flex;
+            flex-direction: column; 
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1rem; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s; 
+        }
+
+        input:focus {
+            outline: none; 
+            border-color: #007bff; 
+            box-shadow: 0 0 5px rgba(0,123,255,0.25); 
+        }
+
+        /* --- ESTILOS DO BOTÃO --- */
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff; 
+            color: white; 
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease; 
+            margin-top: 0.5rem; 
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3; 
+        }
+
+        /* --- ESTILOS DA MENSAGEM DE ERRO --- */
+
+        .error-message { 
+            color: #a94442; 
+            background-color: #f2dede; 
+            border: 1px solid #ebccd1; 
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 1rem; 
+            text-align: center; 
+        }
+
+        .error-message:empty {
+            display: none;
+        }
+
+        /* --- ESTILOS DO LINK "Faça login" --- */
+
+        .auth-container p {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .auth-container p a {
+            color: #007bff; 
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-container p a:hover {
+            text-decoration: underline; 
+        }
+
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div id="formulario">
+
+            <div class="logo-container">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
+                    <path d="M10 8l-3 3 3 3"/>
+                    <path d="M14 12l3-3-3-3"/>
+                    <line x1="7" y1="11" x2="17" y2="11"/>
+                </svg>
+                <h1 class="logo-name">SwappBook</h1>
+            </div>
             <h2>Crie sua Conta</h2>
+            
             <div id="error-div" class="error-message"></div>
+            
             <form id="form-cadastro">
                 <input type="text" id="nome" placeholder="Nome completo" required>
                 <input type="email" id="email" placeholder="E-mail" required>
@@ -24,20 +178,22 @@
                 <input type="password" id="confirmar_senha" placeholder="Confirme a senha" required>
                 <button type="submit">Cadastrar</button>
             </form>
-            <p style="text-align: center; margin-top: 15px;">
+            
+            <p>
                 Já tem uma conta? <a href="login.html">Faça login</a>
             </p>
         </div>
     </div>
 
     <script>
+        // Seu JavaScript continua o mesmo, não precisa alterar.
         const API_URL = 'http://127.0.0.1:5000';
         const form = document.getElementById('form-cadastro');
         const errorDiv = document.getElementById('error-div');
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            errorDiv.textContent = ''; // Limpa erros antigos
+            errorDiv.textContent = ''; 
 
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
@@ -45,7 +201,6 @@
             const senha = document.getElementById('senha').value;
             const confirmar_senha = document.getElementById('confirmar_senha').value;
 
-            // Validação no frontend (ajuda o usuário, mas a principal é no backend)
             if (senha !== confirmar_senha) {
                 errorDiv.textContent = 'As senhas não coincidem!';
                 return;
@@ -66,9 +221,9 @@
 
                 if (response.ok) {
                     alert(data.mensagem);
-                    window.location.href = 'login.html'; // Redireciona para o login
+                    window.location.href = 'login.html'; 
                 } else {
-                    errorDiv.textContent = data.erro; // Mostra erro vindo da API
+                    errorDiv.textContent = data.erro; 
                 }
             } catch (error) {
                 errorDiv.textContent = 'Não foi possível conectar ao servidor.';

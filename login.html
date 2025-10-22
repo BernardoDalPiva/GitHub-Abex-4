@@ -3,27 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Minha Biblioteca</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Login - SwappBook</title>
+    <style>
+        /* --- ESTILOS GLOBAIS E DE LAYOUT --- */
+        
+        * {
+            box-sizing: border-box; 
+        }
+
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+            background-size: cover; 
+            background-position: center center; 
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+        }
+        
+        /* --- ESTILOS DO CONTÊINER DO FORMULÁRIO --- */
+
+        .auth-container { 
+            width: 100%; 
+            max-width: 420px; 
+            background-color: rgba(255, 255, 255, 0.95); 
+            padding: 2.5rem 2rem; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* --- ESTILOS DA LOGO --- */
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            margin-bottom: 1rem;
+        }
+
+        .logo-container svg {
+            width: 70px; 
+            height: 70px;
+        }
+        
+        .logo-name {
+            font-size: 2.5rem; 
+            font-weight: 700;
+            color: #333;
+            margin: 0.5rem 0 0 0; 
+        }
+
+        /* h2 (Subtítulo) */
+        h2 {
+            text-align: center;
+            color: #555; 
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 1.5rem; 
+        }
+
+        /* --- ESTILOS DOS CAMPOS DO FORMULÁRIO --- */
+
+        #form-login {
+            display: flex;
+            flex-direction: column; 
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1rem; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s; 
+        }
+
+        input:focus {
+            outline: none; 
+            border-color: #007bff; 
+            box-shadow: 0 0 5px rgba(0,123,255,0.25); 
+        }
+
+        /* --- ESTILOS DO BOTÃO --- */
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff; 
+            color: white; 
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease; 
+            margin-top: 0.5rem; 
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3; 
+        }
+
+        /* --- ESTILOS DA MENSAGEM DE ERRO --- */
+
+        .error-message { 
+            color: #a94442; 
+            background-color: #f2dede; 
+            border: 1px solid #ebccd1; 
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 1rem; 
+            text-align: center; 
+        }
+
+        .error-message:empty {
+            display: none;
+        }
+
+        /* --- ESTILOS DO LINK "Cadastre-se" --- */
+
+        .auth-container p {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .auth-container p a {
+            color: #007bff; 
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-container p a:hover {
+            text-decoration: underline; 
+        }
+
+    </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Bem-vindo de Volta!</h2>
-        <div id="error-div" class="error-message"></div>
-        <form id="form-login">
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
+    <div class="auth-container">
+        <div id="formulario">
+            
+            <div class="logo-container">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
+                    <path d="M10 8l-3 3 3 3"/>
+                    <path d="M14 12l3-3-3-3"/>
+                    <line x1="7" y1="11" x2="17" y2="11"/>
+                </svg>
+                <h1 class="logo-name">SwappBook</h1>
             </div>
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
-            <button type="submit" class="submit-btn">Entrar</button>
-        </form>
-        <p class="switch-page-link">
-            Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
-        </p>
+            
+            <h2>Bem-vindo de Volta!</h2>
+            
+            <div id="error-div" class="error-message"></div>
+            
+            <form id="form-login">
+                <input type="email" id="email" placeholder="E-mail" required>
+                <input type="password" id="senha" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+            
+            <p>
+                Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
     </div>
 
     <script>
@@ -50,7 +204,7 @@
                 if (response.ok) {
                     alert(data.mensagem);
 
-                    // <<-- PONTO CHAVE: Guardar o token recebido no localStorage do navegador
+                    // Guardar o token recebido no localStorage
                     localStorage.setItem('token', data.token);
                     
                     window.location.href = 'index.html'; // Redireciona para a página principal
