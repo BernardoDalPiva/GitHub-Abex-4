@@ -11,235 +11,54 @@
     <!-- 2. ESTILOS CSS COMPLETOS -->
     <style>
         /* --- ESTILOS GLOBAIS E DE FUNDO --- */
-         * {
-             box-sizing: border-box; 
-         }
-         body { 
-             font-family: Arial, sans-serif; 
+         * { box-sizing: border-box; }
+         body {
+             font-family: Arial, sans-serif;
              margin: 0;
-             padding: 20px; 
-             background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
-             background-size: cover; 
-             background-position: center center; 
+             padding: 20px;
+             background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+             background-size: cover;
+             background-position: center center;
              background-repeat: no-repeat;
-             background-attachment: fixed; 
+             background-attachment: fixed;
              min-height: 100vh;
          }
-         /* --- LAYOUT DO CONTEÚDO --- */
-         .container { 
-             max-width: 1200px; 
-             margin: auto; 
-         }
-         /* --- CABEÇALHO --- */
-         .header { 
-             display: flex; 
-             justify-content: space-between; 
-             align-items: center; 
-             margin-bottom: 20px;
-         }
-         .logo-container {
-             display: flex;
-             align-items: center;
-             gap: 15px; 
-         }
-         .logo-container svg {
-             width: 50px; 
-             height: 50px;
-         }
-         .logo-name {
-             font-size: 2.5rem; 
-             font-weight: 700;
-             color: #007bff; 
-             text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); 
-             margin: 0;
-         }
-         .header-btn { 
-             padding: 12px 20px; 
-             border: none; 
-             background-color: #6c757d; 
-             color: white; 
-             border-radius: 5px; 
-             cursor: pointer; 
-             font-size: 1rem;
-             font-weight: bold;
-             transition: background-color 0.3s ease;
-             text-decoration: none;
-         }
-         .header-btn:hover {
-             background-color: #5a6268;
-         }
-         /* --- ESTILO DO "CARD" --- */
-         .card { 
-             background: rgba(255, 255, 255, 0.95);
-             border-radius: 8px; 
-             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-             overflow: hidden; 
-         }
-         h2, h3 { 
-             color: #333; 
-             margin-top: 0;
-             font-weight: 600;
-         }
-         /* --- ESTILOS DA INTERFACE DE CHAT --- */
-         .chat-container {
-             display: flex;
-             height: 75vh; 
-             min-height: 500px; 
-         }
-         .chat-sidebar {
-             flex: 0 0 300px; 
-             border-right: 1px solid #ddd;
-             display: flex;
-             flex-direction: column;
-             background-color: #fcfcfc;
-         }
-         .sidebar-header {
-             padding: 20px;
-             border-bottom: 1px solid #ddd;
-         }
-         .sidebar-header h2 {
-             margin-bottom: 0;
-             font-size: 1.5rem;
-         }
-         .contact-list {
-             overflow-y: auto; 
-             flex: 1;
-         }
-         .contact-item {
-             display: flex;
-             align-items: center;
-             padding: 15px 20px;
-             border-bottom: 1px solid #eee;
-             cursor: pointer;
-             transition: background-color 0.2s;
-         }
-         .contact-item:hover {
-             background-color: #f5f5f5;
-         }
-         .contact-item.active {
-             background-color: #e9f2ff; 
-         }
-         .contact-photo {
-             width: 40px;
-             height: 40px;
-             border-radius: 50%;
-             background-color: #007bff;
-             color: white;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             font-weight: bold;
-             margin-right: 15px;
-             font-size: 1.2rem;
-         }
-         .contact-info h4 {
-             margin: 0 0 5px 0;
-             color: #333;
-         }
-         .contact-info p {
-             margin: 0;
-             font-size: 0.9rem;
-             color: #777;
-             white-space: nowrap; 
-             overflow: hidden;
-             text-overflow: ellipsis;
-             max-width: 180px; 
-         }
-         .chat-window {
-             flex: 1; 
-             display: flex;
-             flex-direction: column;
-         }
-         .chat-header {
-             padding: 20px;
-             border-bottom: 1px solid #ddd;
-             background-color: #f9f9f9;
-         }
-         .chat-header h3 {
-             margin: 0;
-             font-size: 1.2rem;
-         }
-         .message-area {
-             flex: 1;
-             padding: 20px;
-             overflow-y: auto; 
-             display: flex;
-             flex-direction: column;
-             background-color: #fdfdfd;
-         }
-         /* Estilo para placeholders do histórico */
-         .message-area-placeholder {
-            text-align: center;
-            color: #777;
-            margin: auto;
-         }
-
-         .message {
-             max-width: 70%;
-             padding: 10px 15px;
-             border-radius: 18px;
-             margin-bottom: 10px;
-             line-height: 1.4;
-             word-wrap: break-word; /* Garante quebra de linha */
-         }
-         .message p {
-             margin: 0;
-         }
-         .message span { 
-             font-size: 0.75rem;
-             color: #555;
-             display: block;
-             margin-top: 5px;
-             text-align: right;
-         }
-         .message.received {
-             align-self: flex-start;
-             background-color: #e9e9e9;
-             border-bottom-left-radius: 4px;
-         }
-         .message.received span {
-             color: #777;
-         }
-         .message.sent {
-             align-self: flex-end;
-             background-color: #007bff; 
-             color: white;
-             border-bottom-right-radius: 4px;
-         }
-         .chat-input-form {
-             display: flex;
-             padding: 15px 20px;
-             border-top: 1px solid #ddd;
-             background-color: #f9f9f9;
-         }
-         .chat-input-form input {
-             flex: 1;
-             padding: 12px;
-             border: 1px solid #ccc;
-             border-radius: 5px;
-             font-size: 1rem;
-             transition: border-color 0.3s, box-shadow 0.3s;
-         }
-         .chat-input-form input:focus {
-             outline: none; 
-             border-color: #007bff; 
-             box-shadow: 0 0 5px rgba(0,123,255,0.25); 
-         }
-         .chat-input-form button {
-             padding: 12px 20px; 
-             margin-left: 10px;
-             border: none; 
-             background-color: #007BFF; 
-             color: white; 
-             border-radius: 5px; 
-             cursor: pointer; 
-             font-size: 1rem;
-             font-weight: bold;
-             transition: background-color 0.3s ease;
-         }
-         .chat-input-form button:hover {
-             background-color: #0056b3;
-         }
+         .container { max-width: 1200px; margin: auto; }
+         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+         .logo-container { display:flex; align-items:center; gap:15px; }
+         .logo-container svg { width:50px; height:50px; }
+         .logo-name { font-size:2.5rem; font-weight:700; color:#007bff; text-shadow:0 1px 2px rgba(255,255,255,0.7); margin:0; }
+         .header-btn { padding:12px 20px; border:none; background-color:#6c757d; color:white; border-radius:5px; cursor:pointer; font-size:1rem; font-weight:bold; text-decoration:none; }
+         .header-btn:hover { background-color:#5a6268; }
+         .card { background: rgba(255,255,255,0.95); border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); overflow:hidden; }
+         h2,h3 { color:#333; margin-top:0; font-weight:600; }
+         .chat-container { display:flex; height:75vh; min-height:500px; }
+         .chat-sidebar { flex:0 0 300px; border-right:1px solid #ddd; display:flex; flex-direction:column; background-color:#fcfcfc; }
+         .sidebar-header{ padding:20px; border-bottom:1px solid #ddd; }
+         .sidebar-header h2{ margin-bottom:0; font-size:1.5rem; }
+         .contact-list{ overflow-y:auto; flex:1; }
+         .contact-list-placeholder{ text-align:center; color:#777; padding:20px; }
+         .contact-item{ display:flex; align-items:center; padding:15px 20px; border-bottom:1px solid #eee; cursor:pointer; transition:background-color 0.2s; }
+         .contact-item:hover{ background-color:#f5f5f5; }
+         .contact-item.active{ background-color:#e9f2ff; }
+         .contact-photo{ width:40px; height:40px; border-radius:50%; background-color:#007bff; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; margin-right:15px; font-size:1.2rem; }
+         .contact-info h4{ margin:0 0 5px 0; color:#333; }
+         .contact-info p{ margin:0; font-size:0.9rem; color:#777; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; }
+         .chat-window{ flex:1; display:flex; flex-direction:column; }
+         .chat-header{ padding:20px; border-bottom:1px solid #ddd; background-color:#f9f9f9; }
+         .chat-header h3{ margin:0; font-size:1.2rem; }
+         .message-area{ flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; background-color:#fdfdfd; }
+         .message-area-placeholder{ text-align:center; color:#777; margin:auto; }
+         .message{ max-width:70%; padding:10px 15px; border-radius:18px; margin-bottom:10px; line-height:1.4; word-wrap:break-word; }
+         .message p{ margin:0; }
+         .message span{ font-size:0.75rem; color:#555; display:block; margin-top:5px; text-align:right; }
+         .message.received{ align-self:flex-start; background-color:#e9e9e9; border-bottom-left-radius:4px; }
+         .message.sent{ align-self:flex-end; background-color:#007bff; color:white; border-bottom-right-radius:4px; }
+         .chat-input-form{ display:flex; padding:15px 20px; border-top:1px solid #ddd; background-color:#f9f9f9; }
+         .chat-input-form input{ flex:1; padding:12px; border:1px solid #ccc; border-radius:5px; font-size:1rem; }
+         .chat-input-form input:focus{ outline:none; border-color:#007bff; box-shadow:0 0 5px rgba(0,123,255,0.25); }
+         .chat-input-form button{ padding:12px 20px; margin-left:10px; border:none; background-color:#007BFF; color:white; border-radius:5px; cursor:pointer; font-size:1rem; font-weight:bold; }
+         .chat-input-form button:hover{ background-color:#0056b3; }
     </style>
 </head>
 <body>
@@ -260,144 +79,60 @@
     </div>
 
     <div class="card chat-container">
-        
         <div class="chat-sidebar">
             <div class="sidebar-header">
                 <h2>Conversas</h2>
             </div>
             <div class="contact-list" id="contact-list">
-
-                <!-- 
-                  !! IMPORTANTE !! 
-                  'data-id' deve ser um ID de sala ÚNICO.
-                  Seu backend espera por 'sala_id' na tabela 'mensagens'.
-                  Estes são exemplos para teste.
-                -->
-                
-                <div class="contact-item" data-id="chat_maria_admin" data-name="Maria Silva">
-                    <div class="contact-photo">M</div>
-                    <div class="contact-info">
-                        <h4>Maria Silva</h4>
-                        <p>Olá! Tenho interesse no seu livro...</p>
-                    </div>
-                </div>
-                
-                <div class="contact-item" data-id="chat_joao_admin" data-name="João Souza">
-                    <div class="contact-photo">J</div>
-                    <div class="contact-info">
-                        <h4>João Souza</h4>
-                        <p>Obrigado pela troca! Foi ótimo.</p>
-                    </div>
-                </div>
+                <p class="contact-list-placeholder">Carregando usuários...</p>
             </div>
         </div>
-        
+
         <div class="chat-window">
             <div class="chat-header">
                 <h3 id="chat-with-name">Selecione uma conversa</h3>
             </div>
-            
+
             <div class="message-area" id="message-area">
-                 <!-- Mensagens serão inseridas aqui pelo JavaScript -->
-                 <p class="message-area-placeholder">Selecione uma conversa ao lado para começar.</p>
+                <p class="message-area-placeholder">Selecione uma conversa ao lado para começar.</p>
             </div>
-            
+
             <form class="chat-input-form" id="form-chat">
-                <input type="text" id="message-input" placeholder="Selecione uma conversa..." disabled>
+                <input type="text" id="message-input" placeholder="Selecione uma conversa..." disabled autocomplete="off">
                 <button type="submit" disabled>Enviar</button>
             </form>
         </div>
-
     </div>
 </div>
 
-<!-- 3. SCRIPT DO CHAT (Completamente revisado) -->
+<!-- 3. SCRIPT DO CHAT (LIMPO E FUNCIONAL) -->
 <script>
-    // =================================================================
-    // AUTENTICAÇÃO (Validado)
-    // =================================================================
-    
-    function getToken() {
-        return localStorage.getItem('token');
-    }
+    // ---------------------- AUTENTICAÇÃO ----------------------
+    function getToken(){ return localStorage.getItem('token'); }
+    function parseJwt(token){ try { return JSON.parse(atob(token.split('.')[1])); } catch(e){ return null; } }
+    function logout(){ localStorage.removeItem('token'); window.location.href = 'login.html'; }
+    function getUsuarioLogado(){ const token = getToken(); if(!token) return null; const payload = parseJwt(token); if(payload && payload.exp * 1000 > Date.now()) return payload; localStorage.removeItem('token'); return null; }
 
-    function parseJwt(token) {
-        try {
-            return JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('token');
-        window.location.href = 'login.html';
-    }
-
-    function getUsuarioLogado() {
-        const token = getToken();
-        if (!token) return null;
-
-        const payload = parseJwt(token);
-        // Verifica se o payload existe E se não está expirado
-        if (payload && payload.exp * 1000 > Date.now()) {
-            return payload; // Retorna os dados do usuário (ex: {id: 1, nome: 'Ana', ...})
-        }
-        
-        localStorage.removeItem('token');
-        return null;
-    }
-    
     const usuario = getUsuarioLogado();
+    if(!usuario){ console.error('Nenhum usuário logado. Redirecionando para login.'); logout(); }
 
-    // Redireciona para o login se não houver usuário
-    if (!usuario) {
-        console.error("Nenhum usuário logado. Redirecionando para login.");
-        logout();
-    }
+    // ---------------------- CONFIGURAÇÃO SOCKET / API ----------------------
+    const API_URL = 'http://127.0.0.1:5000'; // ajuste para seu backend
+    let socket = null;
 
-    // =================================================================
-    // CONFIGURAÇÕES E CONEXÃO COM O SOCKET
-    // =================================================================
-    const API_URL = 'http://127.0.0.1:5000';
-    let socket; // Declarado aqui
+    if(usuario){
+        socket = io(API_URL, { auth: { token: getToken() } });
 
-    // Só tenta conectar se o usuário estiver logado
-    if (usuario) {
-        socket = io(API_URL, {
-            auth: {
-                token: getToken() // Envia o token para o backend
-            }
-        });
+        socket.on('connect', () => console.log('Conectado ao servidor WebSocket com ID:', socket.id));
+        socket.on('connect_error', (err) => { console.error('Erro ao conectar ao WebSocket:', err.message); const chatHeader = document.getElementById('chat-with-name'); if(chatHeader) chatHeader.textContent = 'Erro de conexão com o chat.'; });
 
-        socket.on('connect', () => {
-            console.log('Conectado ao servidor WebSocket com ID:', socket.id);
-        });
-
-        socket.on('connect_error', (err) => {
-            console.error('Erro ao conectar ao WebSocket:', err.message);
-            alert('Não foi possível conectar ao servidor de chat.');
-        });
-        
-        // OUVINTE DO SERVIDOR (Recebendo Mensagens)
         socket.on('nova_mensagem', (data) => {
             console.log('Mensagem recebida do servidor:', data);
-            
-            // Verifica se a mensagem é da sala que está aberta
-            // E se a mensagem NÃO foi enviada por mim (pois já adicionei)
-            if (data.sala === currentChatId && data.remetente_id !== usuario.id) {
-                adicionarMensagemNaTela(data.texto, data.time, 'received');
-            }
+            if(data && data.sala === currentChatId && data.remetente_id !== usuario.id){ adicionarMensagemNaTela(data.texto, data.time || new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), 'received'); }
         });
-
-    } else {
-        // Se o usuário não estiver logado, o script não continuará
-        console.error("Socket não conectado pois não há usuário.");
     }
 
-    // =================================================================
-    // ELEMENTOS DO DOM (Validado)
-    // =================================================================
+    // ---------------------- ELEMENTOS DO DOM ----------------------
     const contactList = document.getElementById('contact-list');
     const chatHeader = document.getElementById('chat-with-name');
     const messageArea = document.getElementById('message-area');
@@ -405,833 +140,101 @@
     const messageInput = document.getElementById('message-input');
     const sendButton = chatForm.querySelector('button');
 
-    let currentChatId = null; // ID da sala atual (ex: 'sala_teste_1')
+    let currentChatId = null;
     let currentChatName = null;
 
-    // =================================================================
-    // FUNÇÕES DO CHAT (Revisadas e Implementadas)
-    // =================================================================
+    // ---------------------- FUNÇÕES ----------------------
+    function criarSalaId(idOutroUsuario){ const idUsuarioLogado = usuario.id; if(idUsuarioLogado < idOutroUsuario) return `chat_user_${idUsuarioLogado}_${idOutroUsuario}`; return `chat_user_${idOutroUsuario}_${idUsuarioLogado}`; }
 
-    /**
-     * Carrega o histórico de mensagens de uma sala via fetch.
-     */
-    async function carregarHistorico(salaId) {
-        if (!usuario) return; // Garante que o usuário está logado
-
-        messageArea.innerHTML = '<p class="message-area-placeholder">Carregando histórico...</p>';
-
-        try {
-            const response = await fetch(`${API_URL}/historico/${salaId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${getToken()}` // Envia o token para a rota protegida
-                }
-            });
-
-            if (!response.ok) {
-                const erro = await response.json();
-                console.error('Erro ao carregar histórico:', erro.erro);
-                messageArea.innerHTML = `<p class="message-area-placeholder">Não foi possível carregar o histórico: ${erro.erro}</p>`;
-                return;
-            }
-
-            const historico = await response.json();
-            
-            // Limpa o placeholder antes de adicionar mensagens
-            messageArea.innerHTML = ''; 
-
-            if (historico.length === 0) {
-                messageArea.innerHTML = '<p class="message-area-placeholder">Nenhuma mensagem ainda. Diga olá!</p>';
-                return;
-            }
-
-         <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - SwappBook</title>
-
-    <!-- 1. SCRIPT DO CLIENTE SOCKET.IO -->
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-    <!-- 2. ESTILOS CSS COMPLETOS -->
-    <style>
-        /* --- ESTILOS GLOBAIS E DE FUNDO --- */
-         * {
-             box-sizing: border-box; 
-         }
-         body { 
-             font-family: Arial, sans-serif; 
-             margin: 0;
-             padding: 20px; 
-             background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%D'); 
-             background-size: cover; 
-             background-position: center center; 
-             background-repeat: no-repeat;
-             background-attachment: fixed; 
-             min-height: 100vh;
-         }
-         /* --- LAYOUT DO CONTEÚDO --- */
-         .container { 
-             max-width: 1200px; 
-             margin: auto; 
-         }
-         /* --- CABEÇALHO --- */
-         .header { 
-             display: flex; 
-             justify-content: space-between; 
-             align-items: center; 
-             margin-bottom: 20px;
-         }
-         .logo-container {
-             display: flex;
-             align-items: center;
-             gap: 15px; 
-         }
-         .logo-container svg {
-             width: 50px; 
-             height: 50px;
-         }
-         .logo-name {
-             font-size: 2.5rem; 
-             font-weight: 700;
-             color: #007bff; 
-             text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7); 
-             margin: 0;
-         }
-         .header-btn { 
-             padding: 12px 20px; 
-             border: none; 
-             background-color: #6c757d; 
-             color: white; 
-             border-radius: 5px; 
-             cursor: pointer; 
-             font-size: 1rem;
-             font-weight: bold;
-             transition: background-color 0.3s ease;
-             text-decoration: none;
-         }
-         .header-btn:hover {
-             background-color: #5a6268;
-         }
-         /* --- ESTILO DO "CARD" --- */
-         .card { 
-             background: rgba(255, 255, 255, 0.95);
-             border-radius: 8px; 
-             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-             overflow: hidden; 
-         }
-         h2, h3 { 
-             color: #333; 
-             margin-top: 0;
-             font-weight: 600;
-         }
-         /* --- ESTILOS DA INTERFACE DE CHAT --- */
-         .chat-container {
-             display: flex;
-             height: 75vh; 
-             min-height: 500px; 
-         }
-         .chat-sidebar {
-             flex: 0 0 300px; 
-             border-right: 1px solid #ddd;
-             display: flex;
-             flex-direction: column;
-             background-color: #fcfcfc;
-         }
-         .sidebar-header {
-             padding: 20px;
-             border-bottom: 1px solid #ddd;
-         }
-         .sidebar-header h2 {
-             margin-bottom: 0;
-             font-size: 1.5rem;
-         }
-         .contact-list {
-             overflow-y: auto; 
-             flex: 1;
-         }
-         /* Placeholder para lista de contatos */
-         .contact-list-placeholder {
-            text-align: center;
-            color: #777;
-            padding: 20px;
-         }
-
-         .contact-item {
-             display: flex;
-             align-items: center;
-             padding: 15px 20px;
-             border-bottom: 1px solid #eee;
-             cursor: pointer;
-             transition: background-color 0.2s;
-         }
-         .contact-item:hover {
-             background-color: #f5f5f5;
-         }
-         .contact-item.active {
-             background-color: #e9f2ff; 
-         }
-         .contact-photo {
-             width: 40px;
-             height: 40px;
-             border-radius: 50%;
-             background-color: #007bff;
-             color: white;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             font-weight: bold;
-             margin-right: 15px;
-             font-size: 1.2rem;
-         }
-         .contact-info h4 {
-             margin: 0 0 5px 0;
-             color: #333;
-         }
-         .contact-info p {
-             margin: 0;
-             font-size: 0.9rem;
-             color: #777;
-             white-space: nowrap; 
-             overflow: hidden;
-             text-overflow: ellipsis;
-             max-width: 180px; 
-         }
-         .chat-window {
-             flex: 1; 
-             display: flex;
-             flex-direction: column;
-         }
-         .chat-header {
-             padding: 20px;
-             border-bottom: 1px solid #ddd;
-             background-color: #f9f9f9;
-         }
-         .chat-header h3 {
-             margin: 0;
-             font-size: 1.2rem;
-         }
-         .message-area {
-             flex: 1;
-             padding: 20px;
-             overflow-y: auto; 
-             display: flex;
-             flex-direction: column;
-             background-color: #fdfdfd;
-         }
-         /* Estilo para placeholders do histórico */
-         .message-area-placeholder {
-            text-align: center;
-            color: #777;
-            margin: auto;
-         }
-
-         .message {
-             max-width: 70%;
-             padding: 10px 15px;
-             border-radius: 18px;
-             margin-bottom: 10px;
-             line-height: 1.4;
-             word-wrap: break-word; /* Garante quebra de linha */
-         }
-         .message p {
-             margin: 0;
-         }
-         .message span { 
-             font-size: 0.75rem;
-             color: #555;
-             display: block;
-             margin-top: 5px;
-             text-align: right;
-         }
-         .message.received {
-             align-self: flex-start;
-             background-color: #e9e9e9;
-             border-bottom-left-radius: 4px;
-         }
-         .message.received span {
-             color: #777;
-         }
-         .message.sent {
-             align-self: flex-end;
-             background-color: #007bff; 
-             color: white;
-             border-bottom-right-radius: 4px;
-         }
-         .chat-input-form {
-             display: flex;
-             padding: 15px 20px;
-             border-top: 1px solid #ddd;
-             background-color: #f9f9f9;
-         }
-         .chat-input-form input {
-             flex: 1;
-             padding: 12px;
-             border: 1px solid #ccc;
-             border-radius: 5px;
-             font-size: 1rem;
-             transition: border-color 0.3s, box-shadow 0.3s;
-         }
-         .chat-input-form input:focus {
-             outline: none; 
-             border-color: #007bff; 
-             box-shadow: 0 0 5px rgba(0,123,255,0.25); 
-         }
-         .chat-input-form button {
-             padding: 12px 20px; 
-             margin-left: 10px;
-             border: none; 
-             background-color: #007BFF; 
-             color: white; 
-             border-radius: 5px; 
-             cursor: pointer; 
-             font-size: 1rem;
-             font-weight: bold;
-             transition: background-color 0.3s ease;
-         }
-         .chat-input-form button:hover {
-             background-color: #0056b3;
-         }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="header">
-        <div class="logo-container">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
-                <path d="M10 8l-3 3 3 3"/>
-                <path d="M14 12l3-3-3-3"/>
-                <line x1="7" y1="11" x2="17" y2="11"/>
-            </svg>
-            <h1 class="logo-name">SwappBook</h1>
-        </div>
-        <a href="index.html" id="btn-voltar" class="header-btn">Voltar ao Painel</a>
-    </div>
-
-    <div class="card chat-container">
-        
-        <div class="chat-sidebar">
-            <div class="sidebar-header">
-                <h2>Conversas</h2>
-            </div>
-            <!-- LISTA DE CONTATOS AGORA ESTÁ DINÂMICA -->
-            <div class="contact-list" id="contact-list">
-                 <p class="contact-list-placeholder">Carregando usuários...</p>
-            </div>
-        </div>
-        
-        <div class="chat-window">
-            <div class="chat-header">
-                <h3 id="chat-with-name">Selecione uma conversa</h3>
-            </div>
-            
-            <div class="message-area" id="message-area">
-                 <!-- Mensagens serão inseridas aqui pelo JavaScript -->
-                 <p class="message-area-placeholder">Selecione uma conversa ao lado para começar.</p>
-            </div>
-            
-            <form class="chat-input-form" id="form-chat">
-                <input type="text" id="message-input" placeholder="Selecione uma conversa..." disabled>
-                <button type="submit" disabled>Enviar</button>
-            </form>
-        </div>
-
-    </div>
-</div>
-
-<!-- 3. SCRIPT DO CHAT (Completamente revisado) -->
-<script>
-    // =================================================================
-    // AUTENTICAÇÃO (Validado)
-    // =================================================================
-    
-    function getToken() {
-        return localStorage.getItem('token');
-    }
-
-    function parseJwt(token) {
-        try {
-            return JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-            return null;
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('token');
-        window.location.href = 'login.html';
-    }
-
-    function getUsuarioLogado() {
-        const token = getToken();
-        if (!token) return null;
-
-        const payload = parseJwt(token);
-        if (payload && payload.exp * 1000 > Date.now()) {
-            return payload; 
-        }
-        localStorage.removeItem('token');
-        return null;
-    }
-    
-    // Pega os dados do usuário logado (id, nome, is_admin)
-    const usuario = getUsuarioLogado();
-
-    // Redireciona para o login se não houver usuário
-    if (!usuario) {
-        console.error("Nenhum usuário logado. Redirecionando para login.");
-        logout();
-    }
-
-    // =================================================================
-    // CONFIGURAÇÕES E CONEXÃO COM O SOCKET
-    // =================================================================
-    const API_URL = 'http://127.0.0.1:5000';
-    let socket; // Declarado aqui
-
-    // Só tenta conectar se o usuário estiver logado
-    if (usuario) {
-        socket = io(API_URL, {
-            auth: {
-                token: getToken() // Envia o token para o backend
-            }
-        });
-
-        socket.on('connect', () => {
-            console.log('Conectado ao servidor WebSocket com ID:', socket.id);
-        });
-
-        socket.on('connect_error', (err) => {
-            console.error('Erro ao conectar ao WebSocket:', err.message);
-            // Evita 'alert' que pode travar o fluxo
-            const chatHeader = document.getElementById('chat-with-name');
-            if (chatHeader) {
-                chatHeader.textContent = "Erro de conexão com o chat.";
-            }
-        });
-        
-        // OUVINTE DO SERVIDOR (Recebendo Mensagens)
-        socket.on('nova_mensagem', (data) => {
-            console.log('Mensagem recebida do servidor:', data);
-            
-            // Verifica se a mensagem é da sala que está aberta
-            // E se a mensagem NÃO foi enviada por mim (pois já adicionei)
-            if (data.sala === currentChatId && data.remetente_id !== usuario.id) {
-                adicionarMensagemNaTela(data.texto, data.time, 'received');
-            }
-        });
-
-        // Carrega a lista de usuários reais assim que a página abre
-        document.addEventListener('DOMContentLoaded', () => {
-            if (usuario) {
-                carregarUsuarios();
-            }
-        });
-
-    } else {
-        // Se o usuário não estiver logado, o script não continuará
-        console.error("Socket não conectado pois não há usuário.");
-    }
-
-    // =================================================================
-    // ELEMENTOS DO DOM (Validado)
-    // =================================================================
-    const contactList = document.getElementById('contact-list');
-    const chatHeader = document.getElementById('chat-with-name');
-    const messageArea = document.getElementById('message-area');
-    const chatForm = document.getElementById('form-chat');
-    const messageInput = document.getElementById('message-input');
-    const sendButton = chatForm.querySelector('button');
-
-    let currentChatId = null; // ID da sala atual (ex: 'chat_user_1_5')
-    let currentChatName = null;
-
-    // =================================================================
-    // FUNÇÕES DO CHAT (Revisadas e Implementadas)
-    // =================================================================
-
-    /**
-     * Cria um ID de sala único e determinístico entre dois usuários.
-     * Isso garante que ambos os usuários sempre entrem na mesma sala.
-     */
-    function criarSalaId(idOutroUsuario) {
-        const idUsuarioLogado = usuario.id; 
-        // Garante que o ID seja sempre o menor primeiro (ex: chat_user_1_5)
-        if (idUsuarioLogado < idOutroUsuario) {
-            return `chat_user_${idUsuarioLogado}_${idOutroUsuario}`;
-        } else {
-            return `chat_user_${idOutroUsuario}_${idUsuarioLogado}`;
-        }
-    }
-
-    /**
-     * Busca usuários no backend e popula a lista de contatos.
-     */
-    async function carregarUsuarios() {
-        if (!usuario) return;
-
-        try {
-            const response = await fetch(`${API_URL}/usuarios`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            });
-
-            if (!response.ok) {
-                const erro = await response.json();
-                throw new Error(erro.erro || 'Não foi possível carregar a lista de usuários.');
-            }
-
-            const usuariosDoBackend = await response.json();
-            
-            // Limpa o placeholder "Carregando usuários..."
-            contactList.innerHTML = ''; 
-
-            if (usuariosDoBackend.length === 0) {
-                contactList.innerHTML = '<p class="contact-list-placeholder">Nenhum outro usuário encontrado.</p>';
-                return;
-            }
-
-            // Cria um item de contato para cada usuário
+    async function carregarUsuarios(){
+        if(!usuario) return;
+        try{
+            const res = await fetch(`${API_URL}/usuarios`, { method:'GET', headers:{ 'Authorization': `Bearer ${getToken()}` } });
+            if(!res.ok){ const err = await res.json().catch(()=>({erro:'Erro desconhecido'})); throw new Error(err.erro || 'Não foi possível carregar a lista de usuários.'); }
+            const usuariosDoBackend = await res.json();
+            contactList.innerHTML = '';
+            if(!Array.isArray(usuariosDoBackend) || usuariosDoBackend.length === 0){ contactList.innerHTML = '<p class="contact-list-placeholder">Nenhum outro usuário encontrado.</p>'; return; }
             usuariosDoBackend.forEach(outroUsuario => {
-                // Cria um ID de sala único entre o usuário logado e o outro usuário
+                if(!outroUsuario || !outroUsuario.id) return;
                 const salaId = criarSalaId(outroUsuario.id);
-                
                 const contactItem = document.createElement('div');
                 contactItem.classList.add('contact-item');
-                contactItem.dataset.id = salaId; // O ID da sala (ex: chat_user_1_5)
-                contactItem.dataset.name = outroUsuario.nome; // O nome do usuário
+                contactItem.dataset.id = salaId;
+                contactItem.dataset.name = outroUsuario.nome || `Usuário ${outroUsuario.id}`;
 
-                // Cria a foto com a inicial
                 const photoDiv = document.createElement('div');
                 photoDiv.classList.add('contact-photo');
-                // Pega a primeira letra do nome
-                photoDiv.textContent = outroUsuario.nome ? outroUsuario.nome.charAt(0).toUpperCase() : '?'; 
+                photoDiv.textContent = outroUsuario.nome ? outroUsuario.nome.charAt(0).toUpperCase() : '?';
 
-                // Cria as informações (nome, última msg)
-                const infoDiv = document.createElement('div');
-                infoDiv.classList.add('contact-info');
-                
-                const nameH4 = document.createElement('h4');
-                nameH4.textContent = outroUsuario.nome;
-                
-                const lastMsgP = document.createElement('p');
-                lastMsgP.textContent = `Iniciar conversa...`; // Texto padrão
+                const infoDiv = document.createElement('div'); infoDiv.classList.add('contact-info');
+                const nameH4 = document.createElement('h4'); nameH4.textContent = outroUsuario.nome || `Usuário ${outroUsuario.id}`;
+                const lastMsgP = document.createElement('p'); lastMsgP.textContent = 'Iniciar conversa...';
 
-                infoDiv.appendChild(nameH4);
-                infoDiv.appendChild(lastMsgP);
-
-                contactItem.appendChild(photoDiv);
-                contactItem.appendChild(infoDiv);
-
+                infoDiv.appendChild(nameH4); infoDiv.appendChild(lastMsgP);
+                contactItem.appendChild(photoDiv); contactItem.appendChild(infoDiv);
                 contactList.appendChild(contactItem);
             });
-
-        } catch (error) {
-            console.error('Erro ao carregar usuários:', error);
-            contactList.innerHTML = `<p class="contact-list-placeholder">${error.message}</p>`;
-        }
+        }catch(err){ console.error('Erro ao carregar usuários:', err); contactList.innerHTML = `<p class="contact-list-placeholder">${err.message}</p>`; }
     }
 
-    /**
-     * Carrega o histórico de mensagens de uma sala via fetch.
-     */
-    async function carregarHistorico(salaId) {
-        if (!usuario) return; 
-
+    async function carregarHistorico(salaId){
+        if(!usuario) return;
         messageArea.innerHTML = '<p class="message-area-placeholder">Carregando histórico...</p>';
-
-        try {
-            const response = await fetch(`${API_URL}/historico/${salaId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${getToken()}` 
-                }
-            });
-
-            if (!response.ok) {
-                const erro = await response.json();
-                console.error('Erro ao carregar histórico:', erro.erro);
-                messageArea.innerHTML = `<p class="message-area-placeholder">Não foi possível carregar o histórico: ${erro.erro}</p>`;
-                return;
-            }
-
-            const historico = await response.json();
-            
-            messageArea.innerHTML = ''; 
-
-            if (historico.length === 0) {
-                messageArea.innerHTML = '<p class="message-area-placeholder">Nenhuma mensagem ainda. Diga olá!</p>';
-            } else {
-                 // Popula a área de chat com o histórico
-                historico.forEach(msg => {
-                    // O backend (app.py) já nos envia o 'nome' do remetente
-                    const type = msg.remetente === usuario.nome ? 'sent' : 'received';
-                    adicionarMensagemNaTela(msg.texto, msg.time, type);
-                });
-            }
-            
-            scrollToBottom(); // Rola para o final após carregar
-
-        } catch (error) {
-            console.error('Erro de rede ao carregar histórico:', error);
-            messageArea.innerHTML = '<p class="message-area-placeholder">Erro de conexão ao carregar mensagens.</p>';
-        }
+        try{
+            const res = await fetch(`${API_URL}/historico/${encodeURIComponent(salaId)}`, { method:'GET', headers:{ 'Authorization': `Bearer ${getToken()}` } });
+            if(!res.ok){ const err = await res.json().catch(()=>({erro:'Erro desconhecido'})); messageArea.innerHTML = `<p class="message-area-placeholder">Não foi possível carregar o histórico: ${err.erro || 'erro'}</p>`; return; }
+            const historico = await res.json();
+            messageArea.innerHTML = '';
+            if(!Array.isArray(historico) || historico.length === 0){ messageArea.innerHTML = '<p class="message-area-placeholder">Nenhuma mensagem ainda. Diga olá!</p>'; return; }
+            historico.forEach(msg => { const type = msg.remetente === usuario.nome ? 'sent' : 'received'; adicionarMensagemNaTela(msg.texto, msg.time || '', type); });
+            scrollToBottom();
+        }catch(err){ console.error('Erro de rede ao carregar histórico:', err); messageArea.innerHTML = '<p class="message-area-placeholder">Erro de conexão ao carregar mensagens.</p>'; }
     }
 
-
-    /**
-     * Carrega uma nova conversa na janela de chat.
-     */
-    function carregarConversa(id, name) {
-        // Evita recarregar a mesma sala
-        if (currentChatId === id) return; 
-        
-        currentChatId = id; 
-        currentChatName = name;
-        
-        // Marca o contato ativo na UI
-        document.querySelectorAll('.contact-item').forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.id === id) {
-                item.classList.add('active');
-            }
-        });
-
-        // Atualiza o cabeçalho do chat
+    function carregarConversa(id, name){
+        if(currentChatId === id) return;
+        currentChatId = id; currentChatName = name;
+        document.querySelectorAll('.contact-item').forEach(item => item.classList.toggle('active', item.dataset.id === id));
         chatHeader.textContent = `Chat com ${name}`;
-        
-        // Habilita o formulário de envio
-        messageInput.disabled = false;
-        sendButton.disabled = false;
-        messageInput.placeholder = "Digite sua mensagem...";
-        messageInput.focus();
-
-        // Limpa mensagens antigas da tela
+        messageInput.disabled = false; sendButton.disabled = false; messageInput.placeholder = 'Digite sua mensagem...'; messageInput.focus();
         messageArea.innerHTML = '';
-
-        // Entra na sala via WebSocket
-        if (socket) {
-            socket.emit('entrar_sala', { sala: currentChatId });
-        }
-
-        // Busca o histórico de mensagens desta sala
+        if(socket && socket.connected){ socket.emit('entrar_sala', { sala: currentChatId }); }
         carregarHistorico(currentChatId);
     }
 
-    /**
-     * Adiciona um balão de mensagem na tela.
-     */
-    function adicionarMensagemNaTela(text, time, type) {
-        // Evita adicionar mensagens se nenhuma sala estiver selecionada
-        if (!currentChatId) return; 
-
-        // Limpa o placeholder (ex: "Nenhuma mensagem") se for a primeira msg
-        const placeholder = messageArea.querySelector('.message-area-placeholder');
-        if (placeholder) {
-            placeholder.remove();
-        }
-
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', type);
-        
-        // Sanitiza o texto (previne XSS básico)
-        const p = document.createElement('p');
-        p.textContent = text; 
-        
-        const span = document.createElement('span');
-        span.textContent = time;
-
-        msgDiv.appendChild(p);
-        msgDiv.appendChild(span);
-        
-        messageArea.appendChild(msgDiv);
-        scrollToBottom(); // Rola para o final
+    function adicionarMensagemNaTela(text, time, type){
+        if(!currentChatId) return;
+        const placeholder = messageArea.querySelector('.message-area-placeholder'); if(placeholder) placeholder.remove();
+        const msgDiv = document.createElement('div'); msgDiv.classList.add('message', type);
+        const p = document.createElement('p'); p.textContent = text || '';
+        const span = document.createElement('span'); span.textContent = time || '';
+        msgDiv.appendChild(p); msgDiv.appendChild(span);
+        messageArea.appendChild(msgDiv); scrollToBottom();
     }
 
-    /**
-     * Rola a área de mensagens para o final.
-     */
-    function scrollToBottom() {
-        // Rola para o final da área de mensagens
-        messageArea.scrollTop = messageArea.scrollHeight;
-    }
+    function scrollToBottom(){ messageArea.scrollTop = messageArea.scrollHeight; }
 
-    // =================================================================
-    // EVENT LISTENERS (Ações do Usuário)
-    // =================================================================
-
-    // Clicar em um contato da lista (Agora dinâmica)
+    // ---------------------- EVENTOS ----------------------
     contactList.addEventListener('click', (event) => {
         const contactItem = event.target.closest('.contact-item');
-        if (contactItem && usuario) { // Só carrega se o usuário estiver logado
-            const id = contactItem.dataset.id;
-            const name = contactItem.dataset.name;
-            carregarConversa(id, name);
-        }
+        if(contactItem && usuario){ carregarConversa(contactItem.dataset.id, contactItem.dataset.name); }
     });
 
-    // Enviar uma mensagem pelo formulário
     chatForm.addEventListener('submit', (event) => {
         event.preventDefault();
         const texto = messageInput.value.trim();
-        
-        // Só envia se tiver texto, sala selecionada, usuário e socket conectados
-        if (texto && currentChatId && usuario && socket) {
+        if(texto && currentChatId && usuario && socket){
             const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            const dadosMensagem = {
-                sala: currentChatId,
-                texto: texto,
-                remetente: usuario.nome,  // Pego do token
-                remetente_id: usuario.id, // Pego do token
-                time: timestamp
-            };
-
-            // 1. Envia a mensagem para o servidor WebSocket
+            const dadosMensagem = { sala: currentChatId, texto, remetente: usuario.nome, remetente_id: usuario.id, time: timestamp };
             socket.emit('enviar_mensagem', dadosMensagem);
-
-            // 2. Adiciona a *sua própria* mensagem na tela imediatamente
             adicionarMensagemNaTela(texto, timestamp, 'sent');
-            
-            // 3. Limpa o input
             messageInput.value = '';
-            messageInput.focus(); // Mantém o foco no input
+            messageInput.focus();
         }
     });
 
-</script>
-</body>
-</html>
-
-   // Popula a área de chat com o histórico
-            historico.forEach(msg => {
-                // Verifica se a mensagem é 'sent' (enviada) ou 'received' (recebida)
-                // O backend (app.py) já nos envia o 'nome' do remetente
-                const type = msg.remetente === usuario.nome ? 'sent' : 'received';
-                adicionarMensagemNaTela(msg.texto, msg.time, type);
-            });
-
-        } catch (error) {
-            console.error('Erro de rede ao carregar histórico:', error);
-            messageArea.innerHTML = '<p class="message-area-placeholder">Erro de conexão ao carregar mensagens.</p>';
-        }
-    }
-
-
-    /**
-     * Carrega uma nova conversa na janela de chat.
-     */
-    function carregarConversa(id, name) {
-        currentChatId = id; 
-        currentChatName = name;
-        
-        // Ativa o contato na lista (visual)
-        document.querySelectorAll('.contact-item').forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.id === id) {
-                item.classList.add('active');
-            }
-        });
-
-        // Atualiza o cabeçalho do chat
-        chatHeader.textContent = `Chat com ${name}`;
-        
-        // Habilita o formulário de envio
-        messageInput.disabled = false;
-        sendButton.disabled = false;
-        messageInput.placeholder = "Digite sua mensagem...";
-        messageInput.focus();
-
-        // Limpa mensagens antigas
-        messageArea.innerHTML = '';
-
-        // Informa ao servidor que você entrou nesta sala
-        if (socket) {
-            socket.emit('entrar_sala', { sala: currentChatId });
-        }
-
-        // **IMPLEMENTADO:** Carrega o histórico de mensagens
-        carregarHistorico(currentChatId);
-    }
-
-    /**
-     * Adiciona um balão de mensagem na tela.
-     */
-    function adicionarMensagemNaTela(text, time, type) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', type);
-        
-        // Sanitiza o texto para evitar HTML indesejado
-        const p = document.createElement('p');
-        p.textContent = text; 
-        
-        const span = document.createElement('span');
-        span.textContent = time;
-
-        msgDiv.appendChild(p);
-        msgDiv.appendChild(span);
-        
-        messageArea.appendChild(msgDiv);
-        scrollToBottom(); // Rola para o final
-    }
-
-    /**
-     * Rola a área de mensagens para o final.
-     */
-    function scrollToBottom() {
-        messageArea.scrollTop = messageArea.scrollHeight;
-    }
-
-    // =================================================================
-    // EVENT LISTENERS (Ações do Usuário)
-    // =================================================================
-
-    // Clicar em um contato da lista
-    contactList.addEventListener('click', (event) => {
-        const contactItem = event.target.closest('.contact-item');
-        if (contactItem && usuario) { // Só carrega se o usuário estiver logado
-            const id = contactItem.dataset.id;
-            const name = contactItem.dataset.name;
-            carregarConversa(id, name);
-        }
-    });
-
-    // Enviar uma mensagem pelo formulário
-    chatForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const texto = messageInput.value.trim();
-        
-        // Só envia se tiver texto, sala selecionada, usuário e socket conectados
-        if (texto && currentChatId && usuario && socket) {
-            const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            const dadosMensagem = {
-                sala: currentChatId,
-                texto: texto,
-                remetente: usuario.nome,  // Pego do token
-                remetente_id: usuario.id, // Pego do token
-                time: timestamp
-            };
-
-            // 1. Envia a mensagem para o servidor WebSocket
-            socket.emit('enviar_mensagem', dadosMensagem);
-
-            // 2. Adiciona a *sua própria* mensagem na tela imediatamente
-            adicionarMensagemNaTela(texto, timestamp, 'sent');
-            
-            // 3. Limpa o input
-            messageInput.value = '';
-            messageInput.focus(); // Mantém o foco no input
-        }
-    });
-
+    // Carrega usuários ao abrir a página
+    document.addEventListener('DOMContentLoaded', () => { if(usuario) carregarUsuarios(); });
 </script>
 </body>
 </html>
