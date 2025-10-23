@@ -245,7 +245,7 @@ def adicionar_livro():
     return jsonify({"mensagem": f"Livro '{titulo}' inserido com sucesso!"}), 201
 
 @app.route('/livros/<int:id_livro>', methods=['DELETE'])
-@admin_required # <-- Rota protegida (kwargs['usuario_logado'] é injetado)
+@login_required # <-- Rota protegida (kwargs['usuario_logado'] é injetado)
 def deletar_livro(id_livro, **kwargs): # Adicionado **kwargs
     conn = conectar_banco()
     if not conn: return jsonify({"erro": "Não foi possível conectar ao banco de dados"}), 500
@@ -263,7 +263,38 @@ def deletar_livro(id_livro, **kwargs): # Adicionado **kwargs
             cursor.close()
             conn.close()
 
-# --- ADICIONADO PARA O CHAT ---
+# --- ADICIONADO: ROTA PARA LISTAR USUÁRIOS ---
+@app.route('/usuarios', methods=['GET'])
+@login_required # Protegido por login
+def get_usuarios(usuario_logado): # 'usuario_logado' é injetado pelo decorator
+    """Busca todos os usuários, exceto o próprio usuário logado."""
+    
+    usuario_atual_id = usuario_logado['id']
+    conn = conectar_banco()
+    if not conn: return jsonify({"erro": "Erro de conexão com o banco"}), 500
+    
+    usuarios_lista = []
+    try:
+        cursor = conn.cursor()
+        # Seleciona todos, exceto o ID do usuário que fez a requisição
+        sql = "SELECT id, nome FROM usuarios WHERE id != %s ORDER BY nome;"
+        cursor.execute(sql, (usuario_atual_id,))
+        registros = cursor.fetchall()
+        
+        for linha in registros:
+            usuarios_lista.append({
+                'id': linha[0],
+                'nome': linha[1]
+            })
+    except (Exception, Error) as error:
+        return jsonify({"erro": f"Erro ao consultar usuários: {error}"}), 500
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+    return jsonify(usuarios_lista)
+# --- FIM DA NOVA ROTA ---
+
 @app.route('/historico/<string:sala_id>', methods=['GET'])
 @login_required # Protegido por login
 def get_historico_chat(sala_id, **kwargs):
@@ -366,3 +397,4 @@ if __name__ == '__main__':
     # Isso inicia o servidor HTTP e o servidor WebSocket juntos.
     print("Iniciando servidor Flask com Socket.IO...")
     socketio.run(app, debug=True, port=5000)
+
