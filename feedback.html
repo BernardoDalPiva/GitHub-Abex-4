@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedbacks - SwappBook</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: auto; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container svg { width: 50px; height: 50px; }
+
+        .logo-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #007bff;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        .header-btn {
+            padding: 12px 20px;
+            border: none;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .header-btn:hover { background-color: #5a6268; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h2 { color: #333; text-align: center; margin-top: 0; }
+
+        /* Estilos dos campos */
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        textarea { resize: vertical; min-height: 100px; }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+
+        button:hover { background-color: #0056b3; }
+
+        /* Estrelas de avaliação */
+        .stars { display: flex; gap: 5px; cursor: pointer; justify-content: center; margin: 10px 0; }
+        .star { font-size: 1.8rem; color: #ccc; transition: color 0.2s; }
+        .star.selected { color: gold; }
+
+        /* Feedbacks exibidos */
+        .feedback-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .feedback-item:last-child { border: none; }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .feedback-text { margin-top: 5px; color: #555; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo-container">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
+                <path d="M10 8l-3 3 3 3"/>
+                <path d="M14 12l3-3-3-3"/>
+                <line x1="7" y1="11" x2="17" y2="11"/>
+            </svg>
+            <h1 class="logo-name">SwappBook</h1>
+        </div>
+        <a href="index.html" class="header-btn">Voltar ao Painel</a>
+    </div>
+
+    <!-- Formulário de Feedback -->
+    <div class="card">
+        <h2>Deixe seu Feedback</h2>
+        <form id="form-feedback">
+            <label for="livro">Escolha o livro:</label>
+            <select id="livro" required>
+                <option value="">Carregando livros...</option>
+            </select>
+
+            <label>Sua avaliação:</label>
+            <div class="stars" id="stars">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+
+            <label for="comentario">Comentário:</label>
+            <textarea id="comentario" placeholder="Escreva sua opinião sobre o livro..." required></textarea>
+
+            <button type="submit">Enviar Feedback</button>
+        </form>
+    </div>
+
+    <!-- Lista de Feedbacks -->
+    <div class="card">
+        <h2>Feedbacks Recentes</h2>
+        <div id="feedback-list">Carregando feedbacks...</div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://127.0.0.1:5000';
+
+    const livroSelect = document.getElementById('livro');
+    const feedbackList = document.getElementById('feedback-list');
+    const stars = document.querySelectorAll('.star');
+    const form = document.getElementById('form-feedback');
+    let selectedRating = 0;
+
+    function getToken() { return localStorage.getItem('token'); }
+    function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
+
+    // Selecionar estrelas
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.dataset.value);
+            stars.forEach(s => s.classList.toggle('selected', parseInt(s.dataset.value) <= selectedRating));
+        });
+    });
+
+    // Carregar livros
+    async function carregarLivros() {
+        try {
+            const res = await fetch(`${API_URL}/livros`);
+            const livros = await res.json();
+            livroSelect.innerHTML = '<option value="">-- Selecione um livro --</option>';
+            livros.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l.id;
+                opt.textContent = l.titulo;
+                livroSelect.appendChild(opt);
+            });
+        } catch {
+            livroSelect.innerHTML = '<option>Erro ao carregar livros</option>';
+        }
+    }
+
+    // Enviar feedback
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedRating) return alert('Selecione uma nota!');
+        const data = {
+            livro_id: parseInt(livroSelect.value),
+            nota: selectedRating,
+            comentario: document.getElementById('comentario').value
+        };
+        try {
+            const res = await fetch(`${API_URL}/feedback`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            alert(result.mensagem || result.erro);
+            form.reset();
+            stars.forEach(s => s.classList.remove('selected'));
+            selectedRating = 0;
+            carregarFeedbacks();
+        } catch {
+            alert('Erro ao enviar feedback');
+        }
+    });
+
+    // Carregar feedbacks
+    async function carregarFeedbacks() {
+        try {
+            const res = await fetch(`${API_URL}/feedback`);
+            const feedbacks = await res.json();
+            feedbackList.innerHTML = '';
+            feedbacks.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'feedback-item';
+                div.innerHTML = `
+                    <div class="feedback-header">
+                        <span>${f.nome_usuario}</span>
+                        <span>${'★'.repeat(f.nota)}${'☆'.repeat(5 - f.nota)}</span>
+                    </div>
+                    <div class="feedback-text">${f.comentario}</div>
+                `;
+                feedbackList.appendChild(div);
+            });
+        } catch {
+            feedbackList.textContent = 'Erro ao carregar feedbacks.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarLivros();
+        carregarFeedbacks();
+    });
+</script>
+</body>
+</html>

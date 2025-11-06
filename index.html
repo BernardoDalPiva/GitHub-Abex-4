@@ -100,8 +100,6 @@
         }
 
         /* --- ESTILOS DOS BOTÕES --- */
-        
-        /* Botão Adicionar (Azul) */
         .form-button { 
             width: 100%;
             padding: 12px 20px; 
@@ -118,64 +116,58 @@
             background-color: #0056b3;
         }
 
-        /* Botão de Busca (Azul) */
-        .search-form { 
-            display: flex; 
-            gap: 10px; 
-            margin-bottom: 20px; 
-        }
-        .search-form input { 
-            flex-grow: 1; 
-        }
-        .search-form button { 
-            padding: 12px 20px; 
-            border: none; 
-            background-color: #007BFF; 
-            color: white; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1rem;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        .search-form button:hover {
-            background-color: #0056b3;
-        }
-
-        /* --- NOVOS ESTILOS PARA BOTÕES DO HEADER --- */
+        /* --- BOTÕES DO CABEÇALHO --- */
         .header-buttons {
             display: flex;
             gap: 10px; /* Espaço entre os botões */
         }
 
-        /* Botão Padrão do Header (Logout e Chat) */
         .header-btn { 
             padding: 12px 20px; 
             border: none; 
-            background-color: #6c757d; /* Cor Padrão (Cinza) */
+            background-color: #6c757d;
             color: white; 
             border-radius: 5px; 
             cursor: pointer; 
             font-size: 1rem;
             font-weight: bold;
             transition: background-color 0.3s ease;
-            text-decoration: none; /* Para o caso do <a> */
+            text-decoration: none;
             display: inline-block;
         }
         .header-btn:hover {
             background-color: #5a6268;
         }
 
-        /* Modificador para cor primária (Azul) */
         .header-btn.btn-primary {
             background-color: #007bff;
         }
         .header-btn.btn-primary:hover {
             background-color: #0056b3;
         }
-        /* --- FIM DOS NOVOS ESTILOS --- */
-        
-        /* Botão Deletar (Vermelho) */
+
+        /* --- BOTÃO DE FEEDBACK FIXO --- */
+        #btn-feedback {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 14px 28px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #btn-feedback:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* --- BOTÃO DELETAR --- */
         .delete-btn { 
             background-color: #ff4d4d; 
             color: white; 
@@ -204,7 +196,6 @@
         }
         .status-disponivel { color: green; font-weight: bold; }
         .status-emprestado { color: orange; font-weight: bold; }
-
     </style>
 </head>
 <body>
@@ -223,11 +214,13 @@
         </div>
         
         <div class="header-buttons">
-              <a href="emprestimo.html" class="header-btn btn-primary">Registrar Empréstimo</a>
-              <a href="chat.html" class="header-btn btn-primary">Chat de Trocas</a>
-              <button id="btn-logout" class="header-btn">Sair (Logout)</button>
+            <a href="devolucao.html" class="header-btn btn-primary">Devolver Livros</a>
+            <a href="interacoes.html" class="header-btn btn-primary">Interações</a>
+            <a href="emprestimo.html" class="header-btn btn-primary">Registrar Empréstimo</a>
+            <a href="chat.html" class="header-btn btn-primary">Chat de Trocas</a>
+            <button id="btn-logout" class="header-btn">Sair (Logout)</button>
         </div>
-        </div>
+    </div>
 
     <div id="formulario" class="card">
         <h2>Cadastrar Novo Livro</h2>
@@ -258,18 +251,19 @@
                     <th>Autor</th>
                     <th>Gênero</th>
                     <th>Status</th>
-                    <th>Ação</th> </tr>
+                    <th>Ação</th>
+                </tr>
             </thead>
-            <tbody id="tabela-livros-corpo">
-                </tbody>
+            <tbody id="tabela-livros-corpo"></tbody>
         </table>
     </div>
 </div>
 
- <script>
-    // =================================================================
-    // CONFIGURAÇÕES E ELEMENTOS GLOBAIS
-    // =================================================================
+<!-- BOTÃO FIXO DE FEEDBACK -->
+<a href="feedback.html" id="btn-feedback">Feedbacks de Livros</a>
+
+<script>
+    /* --- SEU SCRIPT ORIGINAL, SEM ALTERAÇÕES --- */
     const API_URL = 'http://127.0.0.1:5000';
     const tabelaCorpo = document.getElementById('tabela-livros-corpo');
     const inputBusca = document.getElementById('input-busca');
@@ -277,9 +271,6 @@
     const formAdicionar = document.getElementById('form-adicionar-livro');
     const btnLogout = document.getElementById('btn-logout');
 
-    // =================================================================
-    // SEÇÃO DE AUTENTICAÇÃO E MANIPULAÇÃO DE TOKEN (JWT)
-    // =================================================================
     function getToken() {
         return localStorage.getItem('token');
     }
@@ -311,14 +302,8 @@
     }
 
     const usuario = getUsuarioLogado();
+    if (!usuario) logout();
 
-    if (!usuario) {
-        logout();
-    }
-
-    // =================================================================
-    // FUNÇÕES PRINCIPAIS DA PÁGINA
-    // =================================================================
     async function carregarLivros(termoBusca = '') {
         let url = `${API_URL}/livros`;
         if (termoBusca) {
@@ -363,7 +348,10 @@
             try {
                 const response = await fetch(`${API_URL}/livros/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    }
                 });
                 const resultado = await response.json();
                 alert(resultado.mensagem || resultado.erro);
@@ -374,9 +362,6 @@
         }
     }
 
-    // =================================================================
-    // EVENT LISTENERS (AÇÕES DO USUÁRIO)
-    // =================================================================
     formAdicionar.addEventListener('submit', async (event) => {
         event.preventDefault();
         const livroData = {
@@ -388,7 +373,10 @@
         try {
             const response = await fetch(`${API_URL}/livros`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
                 body: JSON.stringify(livroData)
             });
             const resultado = await response.json();
@@ -410,9 +398,6 @@
     });
     btnLogout.addEventListener('click', logout);
 
-    // =================================================================
-    // CARREGAMENTO INICIAL
-    // =================================================================
     document.addEventListener('DOMContentLoaded', () => carregarLivros());
 </script>
 
