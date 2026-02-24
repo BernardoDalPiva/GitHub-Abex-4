@@ -9,13 +9,10 @@ from datetime import datetime, timedelta, timezone
 from functools import wraps
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-# -----------------------
-# CONFIGURAÇÕES (ajuste conforme seu ambiente)
-# -----------------------
 DB_HOST = os.getenv('DB_HOST', 'localhost')
-DB_NAME = os.getenv('DB_NAME', 'biblioteca')  # ajuste se for "swappbook"
+DB_NAME = os.getenv('DB_NAME', 'biblioteca')  
 DB_USER = os.getenv('DB_USER', 'postgres')
-DB_PASS = os.getenv('DB_PASS', 'decarli123')  # ajuste conforme seu setup
+DB_PASS = os.getenv('DB_PASS', 'decarli123')  
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'uma-chave-secreta-muito-dificil-de-adivinhar-9a8b7c6d5e')
 JWT_ALGO = 'HS256'
@@ -160,7 +157,7 @@ def cadastrar_usuario():
                        (nome, email, cpf, senha_hash))
         conn.commit()
         return jsonify({"mensagem": "Usuário cadastrado com sucesso!"}), 201
-    except errors.UniqueViolation: # Corrigido para usar 'errors'
+    except errors.UniqueViolation: 
         conn.rollback()
         return jsonify({"erro": "E-mail ou CPF já cadastrado."}), 409
     except Exception as e:
@@ -254,7 +251,6 @@ def adicionar_livro(usuario_logado):
     cursor = None
     try:
         cursor = conn.cursor()
-        # opcional: gravar dono (quem cadastrou)
         dono_id = usuario_logado.get('id')
         cursor.execute("INSERT INTO livros (titulo, autor, ano_publicacao, genero, disponivel, dono_id) VALUES (%s,%s,%s,%s,TRUE,%s);",
                        (titulo, autor, ano, genero, dono_id))
@@ -269,14 +265,13 @@ def adicionar_livro(usuario_logado):
         if conn: conn.close()
 
 @app.route('/livros/<int:id_livro>', methods=['DELETE'])
-@login_required # Idealmente @admin_required ou checar se é o dono
+@login_required
 def deletar_livro(id_livro, usuario_logado):
     conn = conectar_banco()
     if not conn: return jsonify({"erro": "Erro de conexão"}), 500
     cursor = None
     try:
         cursor = conn.cursor()
-        # TODO: Adicionar lógica para checar se usuario_logado['id'] == dono_id ou usuario_logado['is_admin']
         cursor.execute("DELETE FROM livros WHERE id = %s;", (id_livro,))
         conn.commit()
         if cursor.rowcount == 0:
@@ -385,7 +380,7 @@ def registrar_emprestimo(usuario_logado):
 
 
 # ===============================================================
-# ROTAS DE DEVOLUÇÃO E LISTAGEM DE EMPRÉSTIMOS (CORRIGIDAS)
+# ROTAS DE DEVOLUÇÃO E LISTAGEM DE EMPRÉSTIMOS
 # ===============================================================
 
 @app.route('/emprestimos', methods=['GET'])
@@ -624,7 +619,7 @@ def socket_enviar_mensagem(data):
     sala = data.get('sala')
     texto = data.get('texto')
     remetente_id = data.get('remetente_id')
-    destinatario_id = data.get('destinatario_id')  # opcional
+    destinatario_id = data.get('destinatario_id') 
     if not sala or not texto or not remetente_id:
         return
     conn = conectar_banco()
