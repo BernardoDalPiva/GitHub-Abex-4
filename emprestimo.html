@@ -24,7 +24,7 @@
          }
          /* --- LAYOUT DO CONTEÚDO --- */
          .container { 
-             max-width: 800px; /* Um pouco mais largo para o formulário */
+             max-width: 800px;
              margin: auto; 
          }
          /* --- CABEÇALHO --- */
@@ -107,10 +107,9 @@
             font-size: 1rem;
             background-color: white;
             transition: border-color 0.3s, box-shadow 0.3s;
-            -webkit-appearance: none; /* Remove a seta padrão (iOS) */
-            -moz-appearance: none;    /* Remove a seta padrão (Firefox) */
-            appearance: none;         /* Remove a seta padrão (Moderno) */
-            /* Adiciona uma seta customizada */
+            -webkit-appearance: none;
+            -moz-appearance: none;    
+            appearance: none;        
             background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
             background-repeat: no-repeat;
             background-position: right 12px center;
@@ -146,8 +145,7 @@
             padding: 10px;
             border-radius: 5px;
             margin-top: 1rem;
-            display: none; /* Começa escondido */
-        }
+            display: none;
         .message-success {
             background-color: #d4edda;
             color: #155724;
@@ -294,10 +292,8 @@
                 return;
             }
 
-            // Adiciona um placeholder
             selectLivro.innerHTML = '<option value="">-- Selecione um livro --</option>';
 
-            // Popula o select
             livrosDisponiveis.forEach(livro => {
                 const option = document.createElement('option');
                 option.value = livro.id;
@@ -333,10 +329,9 @@
                 return;
             }
             
-            // Adiciona um placeholder
+
             selectUsuario.innerHTML = '<option value="">-- Selecione um usuário --</option>';
 
-            // Popula o select
             usuariosDoBackend.forEach(outroUsuario => {
                 const option = document.createElement('option');
                 option.value = outroUsuario.id;
@@ -354,7 +349,7 @@
     // EVENT LISTENERS
     // =================================================================
 
-    // Carrega os dados assim que a página abre
+
     document.addEventListener('DOMContentLoaded', () => {
         if (usuario) {
             carregarLivrosDisponiveis();
@@ -365,7 +360,7 @@
     // Listener para o envio do formulário
     formEmprestimo.addEventListener('submit', async (event) => {
         event.preventDefault();
-        messageDiv.style.display = 'none'; // Esconde msg antiga
+        messageDiv.style.display = 'none';
 
         const livroId = selectLivro.value;
         const usuarioId = selectUsuario.value;
@@ -394,17 +389,11 @@
                 throw new Error(resultado.erro || 'Erro desconhecido ao registrar empréstimo.');
             }
 
-            // Sucesso!
             mostrarMensagem(resultado.mensagem, 'success');
             
-            // Limpa o formulário e recarrega os livros (o livro emprestado sumirá)
             formEmprestimo.reset();
             carregarLivrosDisponiveis();
 
-            // Opcional: Redirecionar após um tempo
-            // setTimeout(() => {
-            //     window.location.href = 'index.html';
-            // }, 2000);
 
         } catch (error) {
             console.error('Erro ao registrar empréstimo:', error);
