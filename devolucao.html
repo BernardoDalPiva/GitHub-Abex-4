@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devolução de Livros - SwappBook</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-image: url('https://images.unsplash.com/photo-1521587765099-b805199b16e3?q=80&w=2070&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+
+    .container { max-width: 800px; margin: auto; }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .logo-container { display: flex; align-items: center; gap: 15px; }
+    .logo-container svg { width: 50px; height: 50px; }
+    .logo-name { font-size: 2.5rem; font-weight: 700; color: #007bff; text-shadow: 0 1px 2px rgba(255,255,255,0.7); margin: 0; }
+    .header-btn {
+        padding: 12px 20px;
+        border: none;
+        background-color: #6c757d;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    .header-btn:hover { background-color: #5a6268; }
+
+    .card {
+        background: rgba(255,255,255,0.95);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+
+    h2 { text-align: center; color: #333; margin-top: 0; }
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    button {
+        padding: 12px 20px;
+        border: none;
+        background-color: #007BFF;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+    button:hover { background-color: #0056b3; }
+    #msg {
+        text-align: center;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        display: none;
+    }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo-container">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v15H6.5A2.5 2.5 0 0 1 4 14.5V4.5A2.5 2.5 0 0 1 6.5 2z"/>
+                <path d="M10 8l-3 3 3 3"/>
+                <path d="M14 12l3-3-3-3"/>
+                <line x1="7" y1="11" x2="17" y2="11"/>
+            </svg>
+            <h1 class="logo-name">SwappBook</h1>
+        </div>
+        <a href="index.html" class="header-btn">Voltar ao Painel</a>
+    </div>
+
+    <div class="card">
+        <h2>Devolver Livro Emprestado</h2>
+
+        <label for="livro-select">Selecione o livro a devolver:</label>
+        <select id="livro-select">
+            <option value="">Carregando...</option>
+        </select>
+
+        <button id="btn-devolver">Confirmar Devolução</button>
+        <div id="msg"></div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://127.0.0.1:5000';
+    const livroSelect = document.getElementById('livro-select');
+    const btnDevolver = document.getElementById('btn-devolver');
+    const msgDiv = document.getElementById('msg');
+
+    function getToken() { return localStorage.getItem('token'); }
+    function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; } }
+    function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
+
+    const usuario = parseJwt(getToken());
+    if (!usuario) logout();
+
+    function mostrarMsg(texto, tipo='error') {
+        msgDiv.textContent = texto;
+        msgDiv.className = tipo === 'success' ? 'success' : 'error';
+        msgDiv.style.display = 'block';
+    }
+
+    async function carregarEmprestimos() {
+        try {
+            const res = await fetch(`${API_URL}/emprestimos`, {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (!res.ok) throw new Error('Erro ao buscar empréstimos');
+            const dados = await res.json();
+
+            const meusEmprestimos = dados.filter(e => e.usuario_id === usuario.id && !e.data_devolucao);
+            livroSelect.innerHTML = '';
+
+            if (meusEmprestimos.length === 0) {
+                livroSelect.innerHTML = '<option value="">Você não possui livros emprestados.</option>';
+                btnDevolver.disabled = true;
+                return;
+            }
+
+            livroSelect.innerHTML = '<option value="">-- Selecione um livro --</option>';
+            meusEmprestimos.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.id;
+                opt.textContent = `${e.titulo_livro} (Emprestado em ${new Date(e.data_emprestimo).toLocaleDateString('pt-BR')})`;
+                livroSelect.appendChild(opt);
+            });
+        } catch (error) {
+            console.error(error);
+            mostrarMsg('Erro ao carregar empréstimos.');
+        }
+    }
+
+    btnDevolver.addEventListener('click', async () => {
+        const emprestimoId = livroSelect.value;
+        if (!emprestimoId) return mostrarMsg('Selecione um livro para devolver.');
+        try {
+            const res = await fetch(`${API_URL}/emprestimos/${emprestimoId}/devolver`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                mostrarMsg(data.mensagem, 'success');
+                carregarEmprestimos();
+            } else {
+                mostrarMsg(data.erro || 'Erro ao devolver o livro.');
+            }
+        } catch {
+            mostrarMsg('Erro ao conectar com o servidor.');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', carregarEmprestimos);
+</script>
+</body>
+</html>
