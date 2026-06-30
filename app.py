@@ -3,7 +3,8 @@
 # =================================================================
 import psycopg2
 from psycopg2 import Error
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
+import os
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -100,7 +101,7 @@ def conectar_banco():
             host="localhost",
             database="biblioteca",
             user="postgres",
-            password="decarli123" # Lembre-se de usar sua senha
+            password="joao0903" # Lembre-se de usar sua senha
         )
         return conexao
     except (Exception, Error) as error:
@@ -108,7 +109,20 @@ def conectar_banco():
         return None
 
 # =================================================================
-# 5. ROTAS DA API (ENDPOINTS HTTP)
+# 5. ROTAS ESTÁTICAS (PÁGINAS HTML)
+# =================================================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+@app.route('/')
+def serve_index():
+    return send_from_directory(BASE_DIR, 'login.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(BASE_DIR, filename)
+
+# =================================================================
+# 6. ROTAS DA API (ENDPOINTS HTTP)
 # =================================================================
 
 # --- Rotas de Autenticação (Sem alteração) ---
@@ -396,5 +410,5 @@ if __name__ == '__main__':
     # Use 'socketio.run()' em vez de 'app.run()'
     # Isso inicia o servidor HTTP e o servidor WebSocket juntos.
     print("Iniciando servidor Flask com Socket.IO...")
-    socketio.run(app, debug=True, port=5000)
+    socketio.run(app, debug=True, port=5000, allow_unsafe_werkzeug=True)
 
